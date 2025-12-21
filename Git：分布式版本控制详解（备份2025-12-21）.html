@@ -1,0 +1,2247 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>【Git：分布式版本控制；详解：把项目同步到 github 备份-更新中】</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><p></p><div class="toc"><h3>Git</h3><ul><li><a href="#Git__4">Git：分布式 版本控制系统（软件）</a></li><ul><li><a href="#Git__15">Git 简介</a></li><li><a href="#_Git_73">安装 Git</a></li><li><a href="#_Git_119">配置 Git：查看配置信息</a></li><ul><li><a href="#__Git__155">绑定用户：设置 用户名、邮箱、使用 Git 本身的菜单项</a></li><li><a href="#Git_Bash_____196">Git Bash 的中文路径/ 文件名 显示 “乱码/转义”问题</a></li></ul><li><a href="#Git_Github_Git__Github___258">Git 、Github 的区别：Git = 本地版本控制的软件、Github = 在线网站、云端备份、多人协作</a></li><ul><li><a href="#_Git__Github_SSH___338">把 Git 绑定到 Github：通过 SSH 密钥 绑定</a></li><li><a href="#_Github__Git___Github____Git__Github_____Github__457">把项目上传到 Github 备份：准备本地项目/添加到 Git 仓库 → Github 上建远程仓库 → 关联本地 Git 仓库和 Github 远程仓库 →  推送项目到 Github 仓库</a></li><li><a href="#_Git__READMEmd__Github_558">在 Git 仓库中添加一个 README.md 文件，上传到 Github</a></li><li><a href="#_Gitee_644">把本地项目上传到 Gitee</a></li></ul><li><a href="#_gitignore__681">忽略文件： .gitignore 文件</a></li><ul><li><a href="#gitignore____Git____682">添加忽略文件：.gitignore 文件 = 不想被 Git 进行版本控制的文件 = 不追踪、不提交、不推送</a></li><li><a href="#_Git__723">解决问题：应该被忽略的文件，却已经被提交和推送，如何在 Git 仓库和远程仓库中删除</a></li></ul><li><a href="#____799">撤销提交/ 回退到“指定提交版本” 、把暂存区文件 回退到工作区</a></li><ul><li><a href="#_Git__git_reset_softmixedhard_HEADn_id_800">版本回退：在 Git 仓库里提交了错误的内容、回退到之前的版本 （git reset --soft/mixed/hard HEAD~n/提交 id）</a></li><ul><li><a href="#_814">版本回退的基础命令</a></li><li><a href="#_919">版本回退的具体步骤</a></li><li><a href="#_git_reflog__git_fsck_lostfoundgit_show__996">重置提交后的“恢复操作”：从操作记录里的提交恢复 git reflog、从暂存区 恢复 git fsck --lost-found、git show &lt;哈希值&gt;</a></li></ul></ul><li><a href="#___1175">取消暂存（取消暂存区的修改）⇒  重置暂存区、保留工作区修改</a></li><ul><li><a href="#__git_reset_HEAD___git_reset___1188">⑴ 第一种方式 取消暂存的文件：git reset HEAD &lt;文件路径&gt; = git reset  &lt;文件路径&gt;</a></li><li><a href="#__git_restore_S___git_restore_staged__1207">⑵ 第二种方式 取消暂存的文件：git restore --S &lt;文件路径&gt; = git restore --staged &lt;文件路径&gt;</a></li></ul><li><a href="#_____1224">恢复文件（丢弃工作区修改）：从某个分支/ 提交/ 暂存区 恢复文件 到工作区</a></li><ul><li><a href="#__git_checkout_id____git_checkout_____1257">⑴ 第一种方式 恢复文件：git checkout 提交id/分支名  - - &lt;文件路径&gt;、git checkout - - &lt;文件路径&gt; （优先级：暂存区＞最新提交）</a></li><li><a href="#__git_restore_s_id___git_restore_sourceID_git_restore___1294">⑵ 第二种方式 恢复文件：git restore -s 提交id &lt;文件路径&gt; = git restore --source=提交ID &lt;文件路径&gt;、git restore &lt;文件路径&gt; （优先级：暂存区＞最新提交）</a></li></ul><li><a href="#__rm__Git___git_rm_cached__1329">删除文件：手动删除 = rm &lt;文件路径&gt;、从 Git 索引删除  git rm --cached &lt;文件路径&gt;</a></li><li><a href="#Github__1435">Github 上的操作</a></li><ul><li><a href="#_Github__1437">克隆/下载 Github 上“已有的仓库”</a></li><li><a href="#_Github__1459">删除 Github 上的仓库</a></li><li><a href="#_Github__html__1474">在 Github 上预览 html 文件</a></li></ul><li><a href="#Git__1509">Git 命令</a></li><ul><li><a href="#Git__1511">Git 帮助信息</a></li></ul></ul></ul></div><p></p>
+<hr>
+<h1><a id="Git__4"></a>Git：分布式 版本控制系统（软件）</h1>
+<hr>
+<ul>
+<li>参考文档：<a href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-Git-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F">Git （中文版-官方文档）</a></li>
+<li><strong>交互式学习</strong>：
+<ul>
+<li>可视化 学习分支操作：<a href="https://learngitbranching.js.org/">Learn Git Branching</a></li>
+<li><a href="https://lab.github.com/">GitHub Learning Lab</a> （网不好的话，可能打不开，用上面那个）</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2><a id="Git__15"></a>Git 简介</h2>
+<br>
+<p><strong><code>Git</code></strong> ：是一个<strong>分布式的 版本控制系统</strong>，具体来说，就是一个可以安装在本地的 <strong>软件/工具</strong>，用于<strong>版本控制</strong>，可以跟踪文件的变化，方便多人协作开发（配合 Github 这类 在线服务网站）。</p>
+<ul>
+<li><strong>注</strong>：安装了 Git，只是有了 <strong>本地 Git 仓库</strong>（版本库），可以进行<strong>本地版本控制</strong>。想要多人协作，一般搭配 <strong>远程仓库</strong>（Github、Gitee 等网站上的仓库）进行备份、多人协作开发。</li>
+<li>简称 <strong>DVCS</strong>，分布式 版本控制系统，Distributed<sub>美/dɪˈstrɪbjuːtɪd/</sub> Version<sub>美/ˈvɜːrʒ(ə)n/</sub> Control System。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/05ef806e1cd04f75a75755044a6df55d.png" alt="Git 版本快照"></li>
+</ul>
+<p><strong>Git 的核心概念</strong>：</p>
+<ul>
+<li><strong>版本控制</strong>：记录文件的<strong>每一次修改</strong>，可以<strong>随时回退</strong>到任意历史版本。</li>
+<li><strong>分布式</strong>：每个开发者，都拥有 完整的项目历史和仓库副本。</li>
+<li><strong>分支管理</strong>：可以创建<strong>独立分支</strong> 进行功能开发，再合并到主分支。</li>
+<li><strong>主要应用场景：</strong> 代码版本管理、团队协作开发、代码备份和恢复、开源项目贡献。</li>
+</ul>
+<hr>
+<p><strong>Git 和其他版本控制的区别</strong></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">事项</th>
+<th align="left">Git</th>
+<th align="left">其他版本控制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>存储数据方式 不同（存储差异）</strong></td>
+<td align="left"><strong>Git 系统（存整体的快照）</strong>：存储 项目随时间改变的 <strong>快照</strong>。<br><br>每次提交更新或保存项目状态时，就会对当时的<strong>全部文件 创建一个快照</strong>，并保存这个<strong>快照的索引</strong>。 <br><br> 如果<strong>文件没有修改</strong>，为了效率，Git 不再重新存储该文件，而是只<strong>保留一个链接 指向之前存储的文件</strong>。 Git 对待数据更像是一个 快照流。 <br><img src="https://i-blog.csdnimg.cn/direct/5c3a32bb982b4ad791715c091d10b8d3.png" alt="在这里插入图片描述"></td>
+<td align="left"><strong>其他系统</strong>：每个文件 <strong>与初始版本的 差异</strong>。<br> 以<strong>文件变更列表</strong>的方式 存储信息，这类系统（CVS、Subversion、Perforce 等等）<br> <img src="https://i-blog.csdnimg.cn/direct/c5dddedb9f7c499382067d9672843e96.png" alt="在这里插入图片描述"></td>
+</tr>
+<tr>
+<td align="left"><strong>操作</strong></td>
+<td align="left">Git： <strong>操作基本上都是本地执行</strong>。<br>绝大多数操作 都只需要访问本地文件和资源。</td>
+<td align="left">需要连接服务器，操作费时。</td>
+</tr>
+<tr>
+<td align="left"><strong>完整性</strong></td>
+<td align="left">Git：能保<strong>整数据完整性</strong>，传输中丢了数据、数据损坏 能被发现。<br>验证完整性方式：哈希值。<br>（相同文件，不管何时何地，都只有一个相同的哈希值。）<br><br>Git 数据库中保存的信息 都是以<strong>文件内容的哈希值 来索引</strong>，而不是文件名。</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>数据操作</strong></td>
+<td align="left">Git：<strong>几乎只添加数据，不删除数据。</strong> <br> 一旦提交数据到 Git 仓库后，就不用怕数据丢失、不可恢复。</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table><hr>
+<p><strong>Git 的 3 种状态、3 种阶段</strong></p>
+<p><strong>Git 的 3 种状态</strong>： 已修改（<code>modified</code>） 、 已暂存（<code>staged</code>）、 已提交（<code>committed</code>）。</p>
+<ul>
+<li>❶ <strong>已修改</strong>：修改了文件，但还没保存到数据库中。</li>
+<li>❷ <strong>已暂存</strong>：对一个已修改文件的当前版本 <strong>做了标记</strong>，使之 <strong>包含在下次提交的快照中</strong>。</li>
+<li>❸ <strong>已提交</strong>：数据已经安全地保存在本地 Git 数据库中。</li>
+</ul>
+<p><strong>3 种状态 ⇒  对应 3 个阶段</strong>：工作区、暂存区、 Git 仓库。</p>
+<ul>
+<li>❶ <strong>工作区</strong>：在本地创建，或是 从 Git 仓库的压缩数据库中 提取出来的文件，放在磁盘上供我们使用或修改。</li>
+<li>❷ <strong>暂存区</strong>：是一个文件，保存了下次 <strong>将要提交的 文件列表信息</strong>，一般在 Git 仓库目录中。 按照 Git 的术语叫做“索引<code>index</code>”，不过一般说法还是叫“暂存区 <code>staging area</code>”，两者是同一个意思。</li>
+<li>❸ <strong>Git 仓库</strong>：Git 用来保存项目的元数据和对象数据库的地方。 从其它计算机克隆仓库时，复制的就是这里的数据。</li>
+</ul>
+<hr>
+<ul>
+<li><strong>Git 基本的工作流程</strong>：修改文件 ⇒  暂存文件 ⇒  提交到 Git 仓库永久保存。
+<ul>
+<li><strong>注</strong>：这时数据还在<strong>本地 Git 仓库</strong>，如果需要上传到<strong>云端备份</strong>，需要关联 Github、Gitee 等网站的<strong>远程仓库</strong>，后面会详解。</li>
+<li>在<strong>工作区里</strong> 修改文件（<strong>已修改</strong>）⇒   把修改后、想提交的文件 放在<strong>暂存区</strong>（<strong>已暂存</strong>），⇒   提交 暂存区的文件  = 把快照存到 <strong>本地 Git 仓库</strong>（<strong>已提交</strong>）。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/a29a8e35012f40bfa3bd4f4b32f8166a.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/4678aedd3c824f198b98d144e0a9b98d.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>注 1</strong>：版本控制系统（如 Git），只能 <strong>跟踪“文本文件的改动”</strong>，本质是文本文件的文件（如 <code>.txt</code>、<code>.html</code>、<code>.css</code> 等代码文件） 都可以追踪具体的修改，添加或删除了某些文本，能被追踪到，但二进制文件，如 图片、视频、word 文等，具体修改了什么内容无法被跟踪。</p>
+<p><strong>注 2</strong>：文本的编码问题，推荐统一使用标准的 <code>UTF-8</code>，所有平台否支持、还支持所有语言，没有冲突。（<strong>不要使用</strong> windows <strong>自带的记事本</strong>编辑文本文件，容易出现编码问题，可以使用常见的代码编辑器，如 webstorm，可免费使用。</p>
+<hr>
+<hr>
+<h2><a id="_Git_73"></a>安装 Git</h2>
+<p><strong>Git 的操作方式</strong>：❶ 命令行、❷ 图形化用户界面的软件（GUI）。</p>
+<ul>
+<li><strong>区别</strong>：命令行模式下，能执行 Git 的 <strong>所有命令</strong>，大多数的 GUI 软件可能功能不全，只能操作<strong>部分命令</strong>，因为 GUI 软件 为了降低操作难度，只实现了 Git 功能的一个子集。</li>
+</ul>
+<p>⚠️ <strong>安装 Git</strong>：<strong>要使用 Git，必须先安装 Git</strong> 。</p>
+<ul>
+<li>各系统安装方法，参考官方安装教程： <a href="https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git">Git - 安装 Git</a> 。</li>
+<li><strong>windows 系统安装</strong>：
+<ul>
+<li><a href="https://release-assets.githubusercontent.com/github-production-release-asset/23216272/5fd8ab6c-2db0-462d-99bf-1c990b2d24a7?sp=r&amp;sv=2018-11-09&amp;sr=b&amp;spr=https&amp;se=2025-12-16T09:37:06Z&amp;rscd=attachment;%20filename=Git-2.52.0-64-bit.exe&amp;rsct=application/octet-stream&amp;skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&amp;sktid=398a6654-997b-47e9-b12b-9515b896b4de&amp;skt=2025-12-16T08:36:59Z&amp;ske=2025-12-16T09:37:06Z&amp;sks=b&amp;skv=2018-11-09&amp;sig=PjMijdDCpprczCT70/Z%2bcIaQPrx2FIcpKBfX83lzL5o=&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2NTg3NjY0MSwibmJmIjoxNzY1ODc0ODQxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.IGd-HVdRWS5_lyfp01gVsAWSM7Ljae4WnFbFIr02U9M&amp;response-content-disposition=attachment;%20filename=Git-2.52.0-64-bit.exe&amp;response-content-type=application/octet-stream">点击下载 windows 安装包 - （2.52.0）x64 版本</a></li>
+<li><a href="https://blog.csdn.net/qq_62223405/article/details/154869827">✔️ 推荐参考教程（非常详细）：【Git】2025全图文详解安装教程-CSDN</a></li>
+</ul>
+</li>
+<li><strong>最简单的安装方法</strong>：安装 <a href="https://github.com/apps/desktop">GitHub Desktop</a>，图形界面。  包含图形化和命令行版本的 Git。 支持 Powershell，提供了稳定的凭证缓存和健全的换行设置。 很适合初学者体验 Git，快速上手，但不适合学习 Git 命令。
+<ul>
+<li><strong>缺点</strong>：无法执行变基、交互式添加、复杂筛选等操作 ，仍需要 <strong>Git 命令行</strong> 。</li>
+<li><strong>学习初期</strong>：推荐从 Git Bash（命令行）开始，方便理解代码原理，仅以 GitHub Desktop 为可视化辅助。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>安装教程 补充点</strong></p>
+<ul>
+<li>
+<p><strong>补充点 1</strong>：<strong>选择 自定义编辑器。</strong> 选项里往下滑，选择“select other editor”，找到自己编辑器的<code>.exe</code> 文件，选择该文件。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/84e416e78bd04d5eaa2a9ba6e60bf8d8.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/be44d7e7bb4d43b6b55ce8e312ba251a.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>补充点 2</strong> ： 如果<strong>用户凭证管理是“灰色按钮”</strong>，无法选择，提醒需要<code>.NET Framework＞=4.7.2</code> ，暂时取消安装。
+<ul>
+<li><strong>手动下载安装.NET Framework</strong>：</li>
+<li><a href="https://dotnet.microsoft.com/zh-cn/download/dotnet-framework">访问 Microsoft 官网下载 .NET Framework（所有版本）</a></li>
+<li><a href="https://download.visualstudio.microsoft.com/download/pr/2d6bb6b2-226a-4baa-bdec-798822606ff1/9b7b8746971ed51a1770ae4293618187/ndp48-web.exe">直接点击下载 .NET Framework 4.8 版本</a></li>
+<li>安装完毕后，再重新开始装。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>
+<p><strong>安装好后 开始使用 <code>Git</code> 命令行</strong>：点击 <strong>Git Bash</strong> 快捷方式，或者按 <strong>win 窗口键</strong>（开始菜单），或者 <strong>在桌面、磁盘中 任意位置右击</strong> 选择 菜单项 “<strong>Open Git Bash here</strong>”，点击 Git bash，就能进入 命令行窗口。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/5b9edff107dc4da8a3b321083a64c8de.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/9a9de03c63da4b2fa2ba1f54a43c6540.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/8c882a841daa466ab7cf3109f795eaa9.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/4649457457ac435992d1a15155b61c44.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<hr>
+<hr>
+<h2><a id="_Git_119"></a>配置 Git：查看配置信息</h2>
+<br>
+<p><strong>配置 Git</strong> ：大部分的配置，在安装 Git 的过程中就设置过了，如 默认文本编辑器、初始化时分支的默认名称、正确的行尾转换（回车换行符）、用户凭证管理等。</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">用途</th>
+<th align="left">命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>查看 所有配置信息（=配置信息列表）</strong></td>
+<td align="left"><code>git config --list</code></td>
+</tr>
+<tr>
+<td align="left"><strong>查看 配置信息列表、带地址信息</strong></td>
+<td align="left"><code>git config --list --show-origin</code></td>
+</tr>
+<tr>
+<td align="left"><strong>查看具体某一项的配置信息</strong></td>
+<td align="left"><code>git config 配置项名称</code></td>
+</tr>
+</tbody>
+</table><ul>
+<li>
+<p><strong>控制 Git 外观和行为</strong>：使用 Git 自带的 <code>git  config</code> 工具，设置 <strong>配置变量</strong>。config<sub>美/kənˈfɪɡ/</sub>，就是“配置”的意思。</p>
+</li>
+<li>
+<p>❶ <strong>查看 配置信息</strong>：使用配置列表  <code>git config --list</code>，列出 Git 现在能找到的所有配置。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/23c414d49db249778016be14a740b0e9.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>❷  <strong>查看所有配置信息 以及“所在文件”</strong>：<code>git config --list --show-origin</code>，所在文件 ⇒  使用 显示源地址 <code>--show-origin</code>。</p>
+<ul>
+<li><strong>注</strong>： 由于 Git 会从多个文件中 读取同一配置变量的不同值，所以怕弄不清是哪个文件里的值时，就加上  <code>--show-origin</code>，会显示从哪个配置文件里读取的值。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/43e20e7cd74c4aef8d57584c728c8224.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>❸ <strong>查看 某一项配置</strong>： <code>git config &lt;key&gt;</code>，如 默认的主要文本编辑器 <code>git config core.editor</code>，和 全部配置信息里是一样的。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/150e8e70e0c6429b8048ea07b2c7633e.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>配置变量 存储的位置 有 3个</strong>：
+<ul>
+<li>❶ <strong>每个用户、用户仓库的 “通用配置“（系统配置）</strong>： <code>/etc/gitconfig</code> 文件里，在 Git 的安装文件夹里的 <code>etc</code> 文件夹里。（系统配置需要管理员权限）。
+<ul>
+<li><strong>读写 系统配置文件</strong>：用 <code>git config --system</code> 选项。</li>
+</ul>
+</li>
+<li>❷ <strong>当前用户 的配置</strong>：<code>~/.gitconfig</code> 或 <code>~/.config/git/config</code> 文件。
+<ul>
+<li><strong>读写 当前用户配置</strong>：用 <code>git config --global</code>选项，会对<strong>所有仓库生效</strong>。</li>
+</ul>
+</li>
+<li>❸ <strong>当前仓库</strong> 的配置：Git 目录里的<code>config</code> 文件，<code>.git/config</code>。</li>
+<li><strong>每一个级别的配置 会覆盖上一个级别的配置</strong>：如 当前仓库的配置变量 <code>.git/config</code>会覆盖 系统配置里配置变量 <code>/etc/gitconfig</code>。
+<ul>
+<li><strong>读写 当前仓库配置</strong>：<code>git config --local</code> 选项，进入某个仓库中时 才会生效。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>注</strong>：使用 命令行时，默认会在<strong>根目录下 查找</strong>，根目录 = 安装 Git 时选择的位置。默认是 C 盘，安装时也可以自己选择位置。</li>
+</ul>
+<hr>
+<h3><a id="__Git__155"></a>绑定用户：设置 用户名、邮箱、使用 Git 本身的菜单项</h3>
+<ul>
+<li><strong>Git 提交时，要用到这两个信息</strong>，会写入到每一次提交中。
+<ul>
+<li>⇒  以后每次提交代码时 ，<strong>署名</strong>用的名字和邮箱，告诉别人这个是谁提交的代码，多人合作时，容易划分对象。</li>
+<li>❶ 如果设置时 使用了 全局<code>--global</code> 选项，只需要设置这一次， 之后该用户的所有操作 都会自动用到这两个信息了。</li>
+<li>❷ 如果在特定项目中使用，在该项目下设置用户名、邮箱，不要使用<code>--global</code> 选项。</li>
+<li><strong>注</strong>：如果有 Github 账户，可以填写 Github 的用户名、绑定的邮箱。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="prism language-bash"><span class="token comment"># 全局默认配置（个人账户）</span>
+<span class="token function">git</span> config --global user.name <span class="token string">"自己的用户名"</span>
+<span class="token function">git</span> config --global user.email <span class="token string">"自己的邮箱"</span>
+
+<span class="token comment"># 为工作项目 单独配置</span>
+<span class="token builtin class-name">cd</span> /path/to/work-project
+<span class="token function">git</span> config user.name <span class="token string">"公司用户名"</span>
+<span class="token function">git</span> config user.email <span class="token string">"公司邮箱"</span>
+</code></pre>
+<ul>
+<li><strong>例</strong>： <strong>配置自己用户名、邮箱</strong>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/9ddb4534b6f24f66a4a7d1b6fd50c838.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li><strong>配置好后，查看下配置是否成功，配置文件在哪里</strong>：<code>git config --list-origin</code>
+<ul>
+<li>可以看到刚配置的用户信息，放在 C 盘的用户<code>User</code> 文件夹里的 <code>.gitconfig</code> 中。</li>
+<li>注：进入 <code>User</code> 文件夹 看不到该文件时，直接搜索<code>.gitconfig</code> 就会显示出来），但不要随意更改，自带笔记本更改 容易出问题。</li>
+</ul>
+</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/c8a04fc3e1694abd8be7b5c61cce7934.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/4395ad5520eb47b89d2a09e39e34cab2.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<ul>
+<li><strong>Git bash 本身的菜单项</strong>： 进入 Git bash 后，点击鼠标右键，会出现菜单项，可以粘贴、复制、设置外观、鼠标、选中行为等。
+<ul>
+<li><strong>注</strong>：<strong>复制文本的问题</strong>：在 Git Bash 中选中文本时，一松鼠标左键，命令行总会出现<code>^C</code> 提示。
+<ul>
+<li><strong>Git bash 中 复制文本的办法</strong>：<strong>选中文本后，不要松开左键，按住左键的同时，右击鼠标</strong>，会出现复制 <strong>Copy</strong> 选项，这个时候 松左键，点击 <strong>Copy</strong>，就能复制文本，还不会出现<code>^C</code> 提示。</li>
+</ul>
+</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/7b2feffc2ea4470a9f7ceff20ef6a51b.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/e4a2f93b282149b89e7737a79f89fe6d.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3><a id="Git_Bash_____196"></a>Git Bash 的中文路径/ 文件名 显示 “乱码/转义”问题</h3>
+<p><strong>问题</strong>：本地文件夹、文件名为中文时，在 Git Bash 中出现转义/乱码的问题。</p>
+<ul>
+<li><strong>原因</strong>：Git 默认会对"特殊字符"进行转义，默认显示为<strong>八进制转义序列</strong>。包括：非 ASCII 字符（中文、日文等）、控制字符、空格等特殊符号。</li>
+</ul>
+<pre><code class="prism language-bash"><span class="token comment"># 查看所有配置</span>
+<span class="token function">git</span> config --list
+
+<span class="token comment"># 查看特定配置，如果没有输出，就是默认转义功能</span>
+<span class="token function">git</span> config core.quotepath
+
+</code></pre>
+<ul>
+<li><strong>解决办法</strong>：使用<code>locale</code> 命令，先查看 Git Bash 的语言设置，为 <code>utf-8</code> 时 →  把默认的中文转义功能关掉。
+<ul>
+<li>解决中文或其他非 ASCII 字符在 Git 输出中显示为转义序列的问题：<code>git config --global core.quotepath false</code>。</li>
+<li><code>git config</code>：Git 配置管理命令 ；</li>
+<li><code>--global</code>：全局配置，对当前用户的所有仓库生效。（其他选项：<code>--system</code> 系统级，<code>--local</code> 仓库级）；</li>
+<li><code>core.quotepath false</code>：Git 的一个配置项，控制路径名显示方式。<code>false</code> <strong>禁用路径转义功能</strong>。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://i-blog.csdnimg.cn/direct/0eb35aba8e1243f0bc54794cf44b40b7.png" alt="在这里插入图片描述"><br>
+<img src="https://i-blog.csdnimg.cn/direct/e1266104a247432ab3f590248410cc2c.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>如果不能解决问题，或出现其他问题，<strong>恢复默认设置</strong></li>
+</ul>
+<pre><code class="prism language-bash"><span class="token comment"># 恢复默认值</span>
+<span class="token function">git</span> config --global core.quotepath <span class="token boolean">true</span>
+
+<span class="token comment"># 或删除配置（使用默认值）</span>
+<span class="token function">git</span> config --global --unset core.quotepath
+</code></pre>
+<ul>
+<li>Windows 中文用户，其他可能需要的配置</li>
+</ul>
+<pre><code class="prism language-bash">
+<span class="token comment"># 关闭默认的特殊字符转义功能</span>
+<span class="token function">git</span> config --global core.quotepath <span class="token boolean">false</span>
+
+<span class="token comment"># 确保图形工具GUI 使用 UTF 编码，避免中文显示乱码问题</span>
+<span class="token function">git</span> config --global gui.encoding utf-8
+
+<span class="token comment"># 指定提交信息（commit message） 的编码为 UTF-8，存储时的编码，确保 git log 能正确显示历史提交中的中文信息</span>
+<span class="token function">git</span> config --global i18n.commit.encoding utf-8
+
+<span class="token comment"># 确保终端能正确显示提交历史中的非ASCII字符，显示时的编码</span>
+<span class="token function">git</span> config --global i18n.logoutputencoding utf-8
+
+<span class="token comment"># Windows 用户额外可能需要：换行符处理</span>
+<span class="token comment"># 提交文件时：CRLF → LF（仓库统一用 LF），检出文件时：LF → CRLF（适合 Windows 编辑器）</span>
+<span class="token function">git</span> config --global core.autocrlf <span class="token boolean">true</span>  <span class="token comment"># 换行符转换</span>
+</code></pre>
+<p><strong>跨平台换行符问题：</strong></p>
+<ul>
+<li>Linux/macOS：使用 <strong>LF</strong>（<code>\n</code>）</li>
+<li>Windows：使用 <strong>CRLF</strong>（<code>\r\n</code>）</li>
+</ul>
+<hr>
+<hr>
+<h2><a id="Git_Github_Git__Github___258"></a>Git 、Github 的区别：Git = 本地版本控制的软件、Github = 在线网站、云端备份、多人协作</h2>
+<br>
+<p><strong>Git 是“本地工具”，GitHub 是“在线网站”，提供在线服务（代码托管、协作开发）</strong>。</p>
+<ul>
+<li>Git 本身作为<strong>工具</strong>，<strong>数据保存在本地</strong>，无法防止电脑损坏带来的数据丢失。</li>
+<li>但 Git 与远程仓库（GitHub 等）结合使用，可以<strong>随时 备份数据到云端</strong>，构成“分布式”工作流，是应对硬件故障的绝佳方案。</li>
+</ul>
+<p><strong>Git（版本控制工具）</strong>：一个<strong>分布式版本控制系统</strong>，是一个安装在我们自己电脑上的 <strong>软件/工具</strong>。</p>
+<ul>
+<li><strong>核心功能</strong>：
+<ul>
+<li><strong>版本管理</strong>：跟踪代码文件的所有<strong>历史修改记录</strong>。可以<strong>随时回退</strong>到任何一个过去的版本。</li>
+<li><strong>分支管理</strong>：可以创建独立的开发分支，在不影响主线代码的情况下 进行新功能开发或 Bug 修复，完成后可以合并回主线。</li>
+<li><strong>本地操作</strong>：绝大多数操作（如 提交更改、查看历史、创建分支）都在我们的<strong>本地计算机上完成</strong>，无需网络。</li>
+</ul>
+</li>
+</ul>
+<p><strong>GitHub（代码托管与协作平台）</strong>：一个基于 <code>Git</code> 的 <strong>“在线 代码托管和协作平台”</strong>，是一个<strong>网站</strong>。</p>
+<ul>
+<li><strong>核心功能</strong>：
+<ul>
+<li><strong>远程仓库托管</strong>：为我们提供一个在云端的“仓库”，用来<strong>备份和共享</strong> 我们的 Git 仓库。解决了<strong>多人协作、代码备份</strong>的问题。</li>
+<li><strong>协作功能</strong>：提供了强大的代码审查、问题跟踪、项目管理、Wiki 文档等功能，极大地方便了团队协作。</li>
+<li><strong>社交与开源</strong>：是全球最大的开源社区。可以“关注”其他开发者，“收藏”感兴趣的项目，并通过 <strong>Pull Request</strong> 为任何开源项目贡献代码。</li>
+</ul>
+</li>
+</ul>
+<p><strong>主要区别总结</strong></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">Git</th>
+<th align="left">GitHub</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>性质</strong></td>
+<td align="left"><strong>工具/软件</strong></td>
+<td align="left"><strong>在线平台/服务</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>归属</strong></td>
+<td align="left">Linus Torvalds 创造的开源项目</td>
+<td align="left">微软旗下的公司（2008年创建）</td>
+</tr>
+<tr>
+<td align="left"><strong>运行位置</strong></td>
+<td align="left">主要在<strong>本地计算机</strong>上运行</td>
+<td align="left">在<strong>云端服务器</strong>上，通过浏览器访问。</td>
+</tr>
+<tr>
+<td align="left"><strong>核心价值</strong></td>
+<td align="left"><strong>版本控制</strong>（管理代码历史）</td>
+<td align="left"><strong>代码托管（备份）、协作与社交</strong>（分享和协作）</td>
+</tr>
+<tr>
+<td align="left"><strong>网络需求</strong></td>
+<td align="left">大部分操作无需网络</td>
+<td align="left">主要操作需要网络连接</td>
+</tr>
+<tr>
+<td align="left"><strong>替代品</strong></td>
+<td align="left">Mercurial, SVN（集中式）等</td>
+<td align="left">Gitee（码云）、GitLab 等</td>
+</tr>
+</tbody>
+</table><ul>
+<li>可以<strong>只使用 Git</strong>  进行 <strong>本地的版本控制</strong>，而不使用 GitHub。</li>
+<li>但如果想<strong>备份代码到云端</strong>，或想进行<strong>团队协作</strong>、参与<strong>开源项目</strong>，就需要将本地的 <strong>Git 仓库 推送</strong>到像 <strong>GitHub</strong> 这样的远程托管平台。</li>
+</ul>
+<hr>
+<p>⚠️<strong>本地 Git 的风险：没有备份，电脑损坏时 容易丢失数据</strong></p>
+<ul>
+<li><strong>本地 Git</strong>： <strong>只在本地使用 Git</strong>，没有定期推送到远程仓库（= 无随时备份）。</li>
+</ul>
+<ul>
+<li><strong>原因</strong>：
+<ul>
+<li><code>Git</code> 的所有<strong>版本历史、分支信息</strong> 都存储在 <strong><code>本地</code></strong> 项目目录的 <strong><code>.git</code></strong> 隐藏文件夹中。</li>
+<li>如果电脑突然坏了，并且这个 <code>.git</code> 文件夹没有备份，那么 <strong>这个项目所有的“版本历史”、所有“分支记录” 都会丢失</strong>。</li>
+<li><strong>只能找回</strong> 我们最后一次<strong>手动备份</strong>的整个项目文件夹（如 拷贝到U盘、云盘），但<strong>会丢失</strong>自那次备份之后的所有 <code>git commit</code> 历史。</li>
+</ul>
+</li>
+</ul>
+<p>✔️  <strong>定期推送到远程仓库</strong>（GitHub、GitLab、Gitee等）：<strong>几乎可以无损恢复。</strong></p>
+<ul>
+<li><strong>原因</strong>（这是 Git 设计的核心优势之一）：
+<ol>
+<li><strong>完整的备份</strong>：<strong>远程仓库</strong> 是本地仓库的完整镜像，包含了所有提交历史、所有分支和标签。</li>
+<li><strong>恢复流程</strong>： 换一台新电脑⇒  安装 Git ⇒  使用 <code>git clone &lt;远程仓库地址&gt;</code> 命令。
+<ul>
+<li>一瞬间，就能把云端的最新代码<strong>以及完整的版本历史</strong> 全部拉取到新电脑上，回到我们最后一次 <code>git push</code> 时的状态。</li>
+</ul>
+</li>
+<li><strong>分布式系统的好处</strong>：Git 是分布式版本控制系统，意味着每个开发者的 本地仓库都是一个完整的备份。我们和同事的电脑+远程服务器，构成了<strong>多个备份点</strong>。</li>
+</ol>
+</li>
+</ul>
+<p><strong>核心要点和最佳实践</strong>：电脑损坏时，能不能找回数据，如 项目文件、历史记录等。</p>
+<ul>
+<li><strong>纯本地 Git，无备份</strong>： <strong>Git 基本没用</strong>，仅能依赖硬盘恢复，希望渺茫。</li>
+<li><strong>本地 + 定期手动文件备份</strong> ：<strong>部分有用</strong> ，能恢复备份时间点的<strong>项目文件</strong>，但<strong>丢失 Git 历史</strong>。</li>
+<li><strong>本地 + 定期推送到远程仓库</strong>：<strong>完全有用</strong> ， 能<strong>100%恢复</strong>代码、分支和完整历史到最近一次推送的状态。</li>
+</ul>
+<p><mark><strong>黄金法则：</strong></mark></p>
+<ol>
+<li>✔️ <strong>尽早、频繁地 <code>git push</code></strong>：这是最重要的习惯。完成一个有意义的功能单元或修复后，就推送到远程。这不仅是备份，也方便协作。</li>
+<li><strong>理解“推送”与“提交”的区别</strong>：
+<ul>
+<li><code>git commit</code> ：只是<strong>在本地 创建了一个“历史快照”</strong>（保存点在本地）。</li>
+<li><code>git push</code> ：才是<strong>把这个快照 “同步到 云端服务器”</strong>（异地备份）。</li>
+<li>只 <code>commit</code> 不 <code>push</code>：就只是写在<strong>本地电脑</strong>上，没存<strong>云盘备份</strong>。电脑一旦有意外，没有备份时，数据就全没了。</li>
+</ul>
+</li>
+<li><strong>利用分支保护</strong>：将重要的分支（如 <code>main</code>, <code>master</code>）设置为受保护分支，防止意外删除。</li>
+</ol>
+<ul>
+<li><strong>总结</strong>： 应该养成 <strong><code>commit</code> 之后随手 <code>push</code></strong> 的好习惯，<strong>修改就提交，提交就备份，备份就不会丢数据</strong>。</li>
+</ul>
+<p><strong>练习 Git 的实践项目</strong></p>
+<ul>
+<li>在 <strong>GitHub/ Gitee</strong> 创建个人项目 。
+<ul>
+<li>本地也可以练习 Git，但 搭配 Github 能随时备份数据，能防丢失；注：如果是开源项目，数据是公开的，别人能看到。</li>
+</ul>
+</li>
+<li>进行日常的添加、提交、推送练习。</li>
+<li>尝试创建分支开发功能并合并。</li>
+</ul>
+<hr>
+<hr>
+<h3><a id="_Git__Github_SSH___338"></a>把 Git 绑定到 Github：通过 SSH 密钥 绑定</h3>
+<ul>
+<li><strong>把 Git 和 Github 绑定</strong>： 通过 SSH 绑定， 安全外壳协议（Secure Shell Protocol）。注：也可以通过 HTTPS 方式绑定，不过 SSH 最常用。</li>
+<li><strong>具体绑定方式</strong>：把 Git Bash 中生成的 <strong><code>SSH</code> 公钥</strong>，填写到 Github 的 <code>SSH Key</code> 中。</li>
+<li><strong>不绑定 Github 的影响</strong>：不绑定 Github，Git 就不能把 <strong>本地 Git 仓库</strong> 推送到 Github上，也就是<strong>不能上传备份</strong>。</li>
+</ul>
+<hr>
+<div id="sshkey-generate"> </div>
+<p><strong>第一步，在 Git Bash 中 生成 <code>SSH Key</code>。</strong></p>
+<ul>
+<li>❶ 检查本地是否安装了 SSH，输入<code>ssh</code>，显示如下，则是安装了。
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/c1bf311675c74b67bbb495def169b277.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>❷ <strong>生成 密钥 <code>SSH key</code> ，有 2 种方式</strong>：
+<ul>
+<li><strong>A：不带注释</strong>： <code>ssh-keygen -t rsa</code>。
+<ul>
+<li><code>ssh-keygen -t rsa</code>：生成<strong>基本的 RSA 密钥对</strong>（默认 2048 位），<strong>密钥注释 使用默认格式</strong>：<code>用户名@主机名</code>。</li>
+</ul>
+</li>
+<li><strong>B：指定邮箱为“注释”</strong>：输入 <code>ssh-keygen -t rsa -C "自己的邮箱"</code>。
+<ul>
+<li><code>ssh-keygen -t rsa -C "自己的邮箱"</code>：生成 <strong>RSA 密钥对</strong>，<strong><code>-C</code> 参数</strong> 用于<strong>设置密钥注释</strong>（comment），注释会显示为我们的邮箱地址。</li>
+</ul>
+</li>
+<li>🔔<strong><code>-C</code>注释</strong>： 注释，用于 <strong>识别密钥的“用途或所有者”</strong> ，不影响密钥本身的安全性，生成密钥时，加不加注释都可以。
+<ul>
+<li><strong>不同注释 区分不同用途的密钥</strong>：在查看公钥文件（<code>id_rsa.pub</code>）或使用 <code>ssh-keygen -l -f</code> 查看密钥指纹时会显示。</li>
+<li>GitHub/GitLab 等平台：<strong>建议使用“邮箱”作为注释</strong>，便于<strong>识别 密钥所有者</strong>。</li>
+</ul>
+</li>
+<li>如果没有意外情况，<strong>输入指令后，点击三次回车（= 全部用默认值）</strong> ，就能自动生成 密钥。
+<ul>
+<li>
+<p>意外情况，一般是主目录里用户名是中文的，导致中文乱码、找不到目录（提示： failed: No such file or directory ），保存密钥失败， <a href="#no-directory">点击查看 解决办法</a> 。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/ca90d2d40a3d437992f2cb9bab5725b6.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p>第一次，提示：<code>Enter file in which to save the key</code></p>
+<ul>
+<li>让设置 <strong>密钥保存位置</strong>，按回车就是代表<strong>使用 默认位置</strong>。（可以自己输入，但一般使用默认的即可）</li>
+</ul>
+</li>
+<li>
+<p>第二次，提示：<code>Enter passphrase for</code></p>
+<ul>
+<li>让我们为私钥文件设置一个密码，直接 <strong>按回车就是 不设置密码</strong>。</li>
+<li>如果输入密码，以后用这个 SSH 密钥连接时，每次需要输入这个密码。</li>
+<li>如果直接回车，就默认不用密码，连接会更快，但没密码就没那么安全，<strong>图省事就可以省略，完全不影响密钥生成</strong>。</li>
+</ul>
+</li>
+<li>
+<p>第三次，提示：<code>Enter same passphrase again:</code></p>
+<ul>
+<li>确认密码，再输入一次密码，第二步没输入的话，第三步也直接 按 Enter 键，<strong>不确认密码</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>
+<p><strong>第二步，密钥成功生成后，到密钥的保存路径，找到这两个密钥，复制“公钥内容”。</strong></p>
+<ul>
+<li>复制公钥，右击公钥文件→   选择“打开方式”→   “记事本” ，打开后不要修改，直接 <strong>ctrl +a 全选</strong>，<strong>ctrl+c 复制</strong>，然后直接关闭记事本，避免误触。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/501155ddaafe49fc9b3e57ca74dd376c.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p><strong>第三步</strong>： 打开 Github 网站，登录账户，<strong>找到 Github 中 <code>SSH key</code> 的填写位置</strong>：按照 GitHub → Settings → SSH and GPG keys → New SSH key 。</p>
+<ul>
+<li><strong>注</strong>： 登录 Github 网站，容易遇到访问速度很慢、无法连接的情况，可以搜下解决办法，最终都能解决问题，如果不是非 Github 不可，可以直接使用 国内的同类型网站，如 <a href="https://gitee.com/">Gitee</a>，速度会很快。</li>
+<li>Gitee 的使用方法和 Github 相似，也可以上传 <strong>SSH 公钥</strong>认证。</li>
+</ul>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/7dd892ca3fe94aa98dc5f10491985d16.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/7ec26f6c2fd14ca8922298e199970faa.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<hr>
+<p><strong>第四步</strong>：在 Git Bash 中验证 是否和 Github 关联成功了： <code>ssh -T git@github.com</code>。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/98672939bfce44819d7c17514c84ecfa.png" alt="在这里插入图片描述"></li>
+</ul>
+<br> 
+<ul>
+<li>
+<p><strong>验证时 可能的意外、解决办法</strong>：如果默认路径中有中文，可能会出现乱码报错（找不到目录、无法存储 host）、权限可能被拒绝，解决办法如下 ↓</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/37741e055d604209ad2fe899a5df5f09.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>
+<p>❶ <strong>权限被拒绝 Permission denied</strong>⇒  查看 <strong>ssh-agent</strong> 中是否有密钥：<code>ssh-add -l</code>，提示 “Could not open a connection to your authentication agent.”⇒  这个错误意味着 **ssh-agent 没有运行。**使用三句代码解决。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/e93576e88b33485691b07b535a67732a.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p>❷ <strong>路径里有中文，导致乱码问题 无法添加 <code>host</code>问题</strong>：直接<strong>强制指定 <code>known_hosts</code> 文件的存放路径</strong>。</p>
+</li>
+<li>
+<p><code>ssh -T git@github.com -o "UserKnownHostsFile=/c/Users/自己的用户名/.ssh/known_hosts""</code>，会出现成功添加 host 的提示。</p>
+<ul>
+<li><strong>成功提示</strong>：Warning: Permanently added ‘github.com’ (ED25519) to the list of known hosts.</li>
+<li>把 GitHub 的服务器信息（它的身份指纹）记录到本地了。下次连接 GitHub 时，不需要再问我们了。
+<ul>
+<li>存在文件里：<code>~/.ssh/known_hosts</code>。（<code>~</code> 代表我们的用户主目录，<strong>可用<code>pwd</code> 查看当前目录</strong>）。</li>
+</ul>
+</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/3a0e58262b724b1f8555bc954eb811ce.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<div id="no-directory"> </div>
+<p><strong>补充说明：无法保存密钥的 解决办法。如果密钥生成过程中，提示“失败，没有当前目录”</strong>  ⇒  failed: No such file or directory 。</p>
+<ul>
+<li><strong>解决办法</strong>：先创建<code>.ssh</code>目录后，再用“指定存放密钥存放地址”的方式，重新创建 SSH 密钥。（参见后面的步骤）</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/2d17c74b90f04b14af747a481de6341c.png" alt="在这里插入图片描述"></li>
+</ul>
+<p><strong>第一步</strong>，显示<strong>当前所在的目录</strong>（文件夹）的完整路径。 输入 <code>pwd</code>， = Print Working Directory（打印工作目录）。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/c0de1e64440c45a98154f564e19b8a9b.png" alt="在这里插入图片描述"></li>
+</ul>
+<p><strong>第二步</strong>，<strong>创建 <code>.ssh</code> 文件夹，确保 SSH 配置目录存在</strong>。</p>
+<ul>
+<li>
+<p><strong>输入命令</strong>：<code>mkdir -p "/c/Users/张三/.ssh"</code></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/470f5e29426549d8b3cc785b726bef9c.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p><strong><code>mkdir</code></strong>：创建目录命令。</p>
+</li>
+<li>
+<p><strong><code>-p</code></strong>：参数，表示：</p>
+<ul>
+<li>如果父目录不存在，一起创建。</li>
+<li>如果目录已存在，不报错。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>"/c/Users/张三/.ssh"</code></strong>：要创建的目录路径。</p>
+<ul>
+<li><code>"/c/</code>：Git Bash 中表示 Windows 的 C 盘根目录。</li>
+<li><code>Users</code>：Windows 用户目录。</li>
+<li><code>张三</code>：中文用户名（需要根据实际情况修改，就是 <code>pwd</code> 里查到的自己的用户名）
+<ul>
+<li>注：计算机的用户名（不是 Git 的用户名 ） 尽量不要用中文，容易出错，前面密钥生成好了、添加上去了，后面认证的验证 也可能出问题，也需要强制指定路径。</li>
+</ul>
+</li>
+<li><code>.ssh</code>：SSH 配置文件目录（隐藏文件夹，手动生成就不会隐藏了）。</li>
+</ul>
+</li>
+<li>
+<p><strong>作用</strong>：确保 SSH 配置目录存在。</p>
+</li>
+</ul>
+<hr>
+<p><strong>第三步</strong>：生成密钥，生成的时候 <strong>手动指定 密钥文件保存路径</strong>。</p>
+<pre><code class="prism language-bash">ssh-keygen -t rsa -f <span class="token string">"/c/Users/张三/.ssh/id_rsa"</span> -C <span class="token string">"your_email@example.com"</span>
+</code></pre>
+<ul>
+<li>
+<p><strong><code>ssh-keygen</code></strong>：生成 SSH 密钥对的工具。</p>
+</li>
+<li>
+<p><strong><code>-t rsa</code></strong>：指定密钥类型为 RSA。</p>
+</li>
+<li>
+<p><strong><code>-f "/c/Users/张三/.ssh/id_rsa"</code></strong>：指定密钥文件保存路径。</p>
+<ul>
+<li>私钥：<code>/c/Users/张三/.ssh/id_rsa</code>。</li>
+<li>公钥：<code>/c/Users/张三/.ssh/id_rsa.pub</code>（自动生成）。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>-C "your_email@example.com"</code></strong>：添加注释（通常用邮箱标识密钥所有者）。</p>
+</li>
+<li>
+<p><strong>作用</strong>：生成一对 SSH 密钥（<strong>私钥+公钥</strong>）。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/927b048f3176439e8c3e959f6515cc1c.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<hr>
+<h3><a id="_Github__Git___Github____Git__Github_____Github__457"></a>把项目上传到 Github 备份：准备本地项目/添加到 Git 仓库 → Github 上建远程仓库 → 关联本地 Git 仓库和 Github 远程仓库 →  推送项目到 Github 仓库</h3>
+<ul>
+<li>把 <strong>Git 绑定 Github 后</strong>（上一节），才能推送数据到 Github。</li>
+<li>注：如果没有绑定成功，无法推送数据到 Github。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/5c3dc1049a20470dadac87e1ac7723bc.png" alt="在这里插入图片描述"></li>
+</ul>
+<p>将本地项目上传到GitHub，主要有 4 个步骤：<strong>准备本地项目（添加到 Git仓库）、在 GitHub 创建仓库、关联本地与远程仓库（Github）、推送项目到 GitHub</strong>。</p>
+<p><strong>可能用到的基础命令</strong></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">用途</th>
+<th align="left">命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>查看 当前目录</strong></td>
+<td align="left"><code>pwd</code>，确定当前的位置。</td>
+</tr>
+<tr>
+<td align="left"><strong>切换 当前工作目录</strong><br><strong>cd</strong> = Change Directory。<br>（更改目录/切换目录）</td>
+<td align="left"><strong>进入 指定文件夹：</strong><code>cd 文件夹路径</code>，如 <code> cd /f/Git-test</code>；<br><strong>返回 上一级目录</strong>：<code>cd ..</code> ；<br><img src="https://i-blog.csdnimg.cn/direct/23d62ff4a8284e6e8cdfa8efd9848bb2.png" alt="在这里插入图片描述"></td>
+</tr>
+<tr>
+<td align="left"><strong>初始化一个 Git 仓库</strong></td>
+<td align="left"><code>git init</code></td>
+</tr>
+<tr>
+<td align="left"><strong>添加文件到暂存区</strong></td>
+<td align="left"><code>git add</code></td>
+</tr>
+<tr>
+<td align="left"><strong>查看 仓库当前状态</strong></td>
+<td align="left"><code>git status</code></td>
+</tr>
+<tr>
+<td align="left"><strong>把暂存区内容 提交到“本地 Git 仓库”</strong></td>
+<td align="left"><code>git commit -m "本地提交的说明"</code></td>
+</tr>
+<tr>
+<td align="left"><strong>添加/关联 “远程仓库地址”</strong></td>
+<td align="left"><code>git remote add origin（=远程仓库别名） github上的Git仓库地址</code></td>
+</tr>
+<tr>
+<td align="left"><strong>查看 远程仓库的信息</strong></td>
+<td align="left"><code>git remote -v</code></td>
+</tr>
+<tr>
+<td align="left"><strong>把本地 Git 仓库 推送到远程仓库</strong></td>
+<td align="left"><code>git push -u origin main</code>、<code>git push origin main</code></td>
+</tr>
+<tr>
+<td align="left"><strong>查看 “提交的历史记录”</strong></td>
+<td align="left"><code>git log</code></td>
+</tr>
+<tr>
+<td align="left"><strong>查看 当前目录里的文件列表</strong></td>
+<td align="left"><code>ls</code>、<code>dir</code></td>
+</tr>
+</tbody>
+</table><hr>
+<p><strong>第一步</strong>：<strong>准备本地项目、添加到 Git 仓库</strong>。</p>
+<ul>
+<li>
+<p>❶  <strong>初始化“一个 Git 仓库”</strong> ：在<strong>项目“根目录”执行 <code>git init</code></strong>，创建新的 Git 仓库（会生成 <code>.git</code> 隐藏文件夹），记录当前的文件状态，开始版本控制。</p>
+<ul>
+<li><strong>注</strong>：确保各个文件夹名 <strong>没有中文字</strong>，尤其是 windows 系统，否则容易出现各种奇怪的问题。如果没有当前项目，可以手动新建一个文件夹，放一个<code>.txt</code> 文件、或者图片做测试。</li>
+<li>点击进我们想上传的文件夹里（还没有被版本控制的新项目），进入文件夹后，右击 选择 <strong>“Open Git Bash here”</strong> ，打开命令行窗口，先确认当前目录位置 <code>pwd</code>，再输入 初始化指令<code>git init</code>，初始化后，当前文件夹里会出现一个 名字叫 <code>.git</code> 的隐藏文件夹。
+<ul>
+<li><code>.git</code> 的隐藏文件夹：这里存放 <strong>“当前 Git 仓库”的数据，可以进行版本控制</strong>（提交记录、分支信息等），千万别动这个文件夹里的数据，会破坏 Git 仓库。</li>
+</ul>
+</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/75aae042fd04423391079cf61f16a9c2.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/926242178a7a4a2cb65b26943e97f168.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>❷ <strong>添加文件到“暂存区”</strong>：使用 <code>git add .</code> 将所有文件添加到暂存区（忽略文件 <code>.gitignore</code> 中声明的除外），为提交做准备：</p>
+<ul>
+<li>如果只想添加特定文件，可以将 <code>.</code> 替换为具体的文件，如 <code>git add README.md</code>。</li>
+<li>在项目根目录创建 <code>.gitignore</code> 文件，用来排除<strong>不需要上传的文件</strong>（如 临时文件、编译产物、本地配置文件等）。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/7695ff03b34f449baad39b1750e4984a.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/8f5c78c515be43b485a7d0b5aefd3f55.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>❸ <strong>暂存区内容 提交到“本地 Git 仓库”</strong>：将暂存区的内容 正式保存为一个本地版本记录。</p>
+<ul>
+<li>提交信息 (<code>-m</code> 后的内容) 就是告诉别人，这次提交做了什么，应该简洁清晰地<strong>描述本次更改</strong>。提交说明<code>-m</code>一定要写，方便以后 精准找到具体的修改记录。</li>
+<li><strong>注</strong>：此时的数据还在本地，在 <strong>本地的 Git 仓库中</strong>，没有上传。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/63012a92a5e3472f9810267fe39d88d6.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/d744243c8e26432783bc93df230039d6.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>查看 Git 仓库当前的状态</strong>：<code>git status</code>，能随时掌握 Git 仓库当前的状态。
+<ul>
+<li>在没有 Git 仓库的位置打开 Git Bash，查看 Git 仓库状态，输入 <code>git status</code>，会提示我们 不是 Git 仓库 “<strong>not a git repository</strong>”。</li>
+<li>如 我们的 Git 仓库放在 F 盘的 Git-test 文件夹中（应该在此处根目录 右键打开 Git Bash），但我们在桌面上打开 Git bash，提示如下。</li>
+</ul>
+</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/7be427d801514418a0e3e2630d47c1f4.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>第二步，在 Github 上创建一个仓库（= 本地 Git 仓库 上传后的存放位置）。</strong></p>
+<ul>
+<li>点击自己的头像 →  <strong>Repositories</strong><sub>美/rɪˈpɑːzəˌtɔːriz/，仓库</sub> → <strong>New</strong></li>
+<li>创建成功后，会看到一个<strong>空仓库的页面</strong>，其中包含一个 HTTPS 或 SSH 格式的<strong>仓库地址</strong>（URL），与本地 Git 仓库关联时 会用到，作为关联远程仓库的地址。</li>
+<li><strong>注</strong>：创建空仓库时，除了填写仓库名、描述，选择一下公开或隐私，其他的文件都不要添加，避免第一次推送有冲突，导致推送失败。</li>
+<li><strong>注</strong>：在填写时，会检测仓库名称的唯一性，填写后就不能修改。
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/73411d4aac314b77858e9d783e1e0568.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/27f30cf7925d4b4cb414c87dca3ac321.png" alt="在这里插入图片描述"><img src="https://i-blog.csdnimg.cn/direct/e73de2df89c44b74b7d61ddfc9e7d689.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>第三步</strong>： <strong>把本地 Git 仓库 与远程仓库（Github上的）关联起来。</strong></p>
+<ul>
+<li>
+<p>❶ <strong>添加“远程仓库地址”</strong>： <code>git remote add origin github上的Git仓库地址</code> （上面复制的 Github 仓库地址）</p>
+<ul>
+<li>这条命令<strong>给远程仓库起了一个“别名”</strong>，默认叫 <code>origin</code>。</li>
+<li><strong>远程仓库“别名的用途”</strong>：假如有多个远程仓库时，仓库的别名 可以区分是哪个远程仓库，内容推送到远程仓库时 可以<strong>使用这个别名 推送到指定的远程仓库</strong>。</li>
+<li><strong>注 1</strong>：如果想把 一个本地的 Git 仓库 上传到两个远程仓库（如 Github、Gitee）也是可以的。在关联远程仓库时，可以给他们分别取一个别名。分别执行关联远程仓库的操作。整体操作过程都是一样的。</li>
+<li><strong>注 2</strong>：<strong>如果想改一下远程仓库的别名</strong>：可以先移除远程仓库的别名，重新关联远程仓库时 设置新的别名。
+<ul>
+<li>移除： <code>git remote rm origin</code>，重新关联远程仓库：<code>git remote  add github github地址</code>，远程仓库的别名就从<code>origin</code> 改为 <code>github</code>了。</li>
+</ul>
+</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/f3246c7866f64e6cada5a22ae0ff4c81.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>❷ <strong>查看远程仓库的信息</strong>：<code>git remote -v</code></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/a3e8117eaeac4655a4d3a8e165c3b4bf.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>第四步</strong>：<strong>把本地 Git 仓库 推送到远程仓库</strong>，Github 页面上就能看到文件了。</p>
+<ul>
+<li><code>git push -u origin main</code>
+<ul>
+<li><code>origin</code> 是本地设置的远程仓库名（指向 GitHub 上那个仓库地址）。</li>
+<li><code>main</code> 是要推送的本地分支名字。</li>
+<li><code>-u</code> ：是 <code>--set-upstream</code> 的简写，可以将本地的 <code>main</code> 分支 与远程的 <code>origin/main</code> 分支<strong>建立长期关联</strong>，每个分支只需要用一次。
+<ul>
+<li>
+<p><strong>首次推送</strong>：通常使用 <code>-u</code> 参数进行首次推送，好处是能简化后续命令，如果本地有了新的提交（<code>git commit</code>），只需执行简单的命令即可完成推送。</p>
+</li>
+<li>
+<p><code>git add .</code> →  <code>git commit -m "描述"</code> →  <code>git push</code>，就可以了，不用再加 <code>origin main</code>。如果有多个远程仓库，比如 Github、Gitee 上都做了备份，想指定远程仓库提交，可以把 远程仓库的别名 分支名都加上。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/70d974a54ef4431fa42ec11d27f4d1f7.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/c13552ef0f2d421daa5fe6669ed7e6df.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<hr>
+<h3><a id="_Git__READMEmd__Github_558"></a>在 Git 仓库中添加一个 README.md 文件，上传到 Github</h3>
+<br>
+<p><strong>第一步</strong>，在项目的目录下创建一个新文件。如 一个<code>.md</code>格式的 命名为 <code>README.md</code> 文件，如果这个文件放在根目录，就默认会显示在 Github 仓库的首页（后面会有上传成功的示例）。</p>
+<ul>
+<li>
+<p>❶ <strong>把项目文件夹 添加到代码编辑器</strong>：打开代码编辑器，文件→ 新建→ 打开→ 选择自己项目的文件夹→ 选择 新窗口打开。</p>
+</li>
+<li>
+<p>❷ <strong>添加新文件</strong>：右击<strong>项目文件夹名称</strong>→  新建→ 文件，文件名输入 <strong>README.md</strong>。</p>
+<ul>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/6456b4cf1e154eb7938134350e3d8cd6.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/ac370dead6c24924b2edd5820647054e.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+</li>
+<li>
+<p>❸  <strong>查看 Git 仓库状态</strong>：<code>git status</code></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/ed0308bd17264804a9d790f4fec21d2c.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>第二步：把新文件添加到暂存区</strong>： <code>git add README.md</code></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/e3c0152e33d34c4eaf7c01097918ebc8.png" alt="在这里插入图片描述"></li>
+</ul>
+<p><strong>第三步：把暂存区文件 都提交到 Git 仓库</strong>：<code>git commit  -m  "关于本次提交的说明"</code></p>
+<ul>
+<li>
+<p>❶ 提示插入的两行字，就是刚才在编辑器中输入的两行字。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/19ea87f3d7ff490b9cb1807fc5c66d5e.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p><strong>注</strong>：为什么把工作区的文件 提交到 本地 Git 仓库，要分成 <code>add</code>、<code>commit</code>两步？</p>
+<ul>
+<li>因为 <code>commit</code> 不指定文件时，能一次性提交多个文件到 Git 仓库，而被提交的文件都是谁呢？暂存区里的内容。</li>
+<li>暂存区里的内容，可以由<code>git add</code> <strong>添加到暂存区</strong>里，统一管理。</li>
+<li>这个意思就是：<code>add</code> 负责的暂存区里，存放着可以被提交的所有文件。而 <code>commit</code> 则是可以执行一次性全部提交的动作，只要是暂存区的文件，就可以全部提交。</li>
+<li><strong>两种提交方式</strong>：
+<ul>
+<li>❶ <strong>把暂存区文件全部提交</strong>： <code>git commit -m "提交说明"</code>；</li>
+<li>❷ <strong>绕过暂存区，直接 指定提交文件</strong>（不提交暂存区其他文件）：<code>git commit  &lt;指定的文件路径&gt; - m "提交说明"</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>第四步：把 git 仓库 推送到 Github 上</strong></p>
+<ul>
+<li>❶ 查看远程仓库的信息（要推送到哪）、❷ 推送 git 仓库。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/12c84138c0314a67a16611e0b3a28105.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>第五步：查看 Github 上的显示</strong>，检查是否推送成功。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/0a6714d0c20c4d36939f9ce6bb5bbd0e.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>查看“提交的历史记录”</strong>：<code>git log</code>。</p>
+<ul>
+<li>
+<p>目前为止，我们提交了两次，一次是初次提交，一次是添加了一个新文件，如果我们想看以前的提交记录，可以使用 <code>git log</code> 命令。</p>
+<ul>
+<li><strong>log</strong><sub>美/lɔːɡ/</sub>这个词就是<strong>记录、日志</strong>的意思。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/888edbf0b2174f5caf1122413458f7ee.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p><strong><code>commit 87affb3e2a21a0b7871ee47616116266b8898c75</code></strong></p>
+<ul>
+<li>是 <strong>提交的 id = 唯一哈希值</strong>，是这次提交的“身份证号”。Git 通过它来<strong>唯一标识 这次代码更改</strong>。</li>
+<li><strong>commit</strong> 后面的<strong>一串数字</strong>，是 <strong>commit 的 id</strong>，每次提交都不一样，用算法算出来的哈希值，具有唯一性，目的是<strong>为了防止冲突</strong>。
+<ul>
+<li>想一想，如果有多个人提交，且每个人提交很多次时，用简单的数字就无法区分是哪次提交了，很容易冲突。</li>
+<li>如，第 5 次提交是你，我也是第 5 次提交，那么有两个第 5 次提交…这不符合唯一性，提交就冲突了，但根据算法计算出的<strong>哈希值</strong> 能提供<strong>唯一性</strong>，完美解决冲突。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>(HEAD -&gt; main, origin/main, gitee/main)</code></strong></p>
+<ul>
+<li>
+<p><strong>HEAD</strong>：我们当前所在的位置（通常是正在查看或工作的版本）。</p>
+</li>
+<li>
+<p><strong>HEAD -&gt; main</strong>： HEAD 当前指向 <code>main</code> 分支（也就是<strong>现在在 <code>main</code> 分支上</strong>）。</p>
+</li>
+<li>
+<p><strong>origin/main</strong>：远程仓库（别名叫 <code>origin</code>）的 <code>main</code> 分支在这个提交上（说明本地 <code>main</code> 分支和远程是同步的）。</p>
+</li>
+<li>
+<p><strong>gitee/main</strong>：另一个远程仓库（别名为 <code>gitee</code>，是在 Gitee 上也配置了一个远程仓库）的 <code>main</code> 分支也在这个提交上。</p>
+</li>
+<li>
+<p><strong>简单说</strong>：本地、<code>origin</code> 远程和 <code>gitee</code> 远程的 <code>main</code> 分支目前都指向同一个提交，状态是同步的。</p>
+</li>
+<li>
+<p><strong><code>+0800</code></strong> ：时区是 <strong>UTC+8</strong>（东八区，即 北京时间）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>简洁的提交历史记录</strong>：<code>git log --oneline</code> 带上一行<code>--oneline</code> 选项。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/1a3a397da0474c048cce5abbdf77f52f.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>查看当前目录里的文件列表</strong>：<code>ls</code>、<code>dir</code></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/4a11c78b1ce64b09978fb83a99f1d31d.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<ul>
+<li><strong>注</strong>：在代码编辑器中 可看见 Git 的<strong>可视化版本控制</strong>。
+<ul>
+<li>如 <strong>webstorm</strong> 编辑器中，点击左下角 <strong>Git</strong> 可看见 Git 的提交历史 和 远程仓库，能很清楚地看见有几次提交、提交的时间、提交者是谁，点击提交记录，能看见提交的具体文件，点击两次提交的相同文件的不同版本，还能对比差异。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/7b3e05ff13dd4757a1ad7a861057620e.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<hr>
+<div id="gitee-remote"> </div>
+<h3><a id="_Gitee_644"></a>把本地项目上传到 Gitee</h3>
+<ul>
+<li><strong>第一步：把 Git 绑定 Gitee</strong>。注册、登录 Gitee 账号，点击头像→ 账号设置 → 填写 SSH 公钥。
+<ul>
+<li><a href="#sshkey-generate">生成 SSH 公钥的方式</a></li>
+</ul>
+</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/84b48d1696084b1ebcbfe82e5988075c.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/94e95d957ab642f995cb93248a377444.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>第二步：验证绑定 Gitee 是否成功</strong></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/da562f39165041389dd61673cd3e415e.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>第三步：在 Gitee 上建仓库</strong>，个人头像旁边的 <strong>+</strong> 号 → 新建仓库。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/3ab838fba3994d6ebd841117c3d558f0.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/dfebeb1c50ae4905ade4d94ec5c910df.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>第四步：关联 Gitee 远程仓库</strong></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/c9c5d5544f3041f6ab4e071c64e87605.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>第五步</strong>：<strong>推送项目到 Gitee</strong>，第一次推送可能会弹出窗口，然我们填写用户名、密码。</p>
+<ul>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/513589045f6f4e099ac816c882e3b2fa.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/9f719934c4594acabf53dd9a2f55fc3e.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/cb5095a090e04d4c84c8174cb0a1ed74.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<hr>
+<hr>
+<h2><a id="_gitignore__681"></a>忽略文件： .gitignore 文件</h2>
+<h3><a id="gitignore____Git____682"></a>添加忽略文件：.gitignore 文件 = 不想被 Git 进行版本控制的文件 = 不追踪、不提交、不推送</h3>
+<br>
+<p><strong>需求</strong>：查看 Git 仓库状态时，发现它总是提醒有一个文件 未被跟踪，而这是一个代码编辑器的配置文件，没有必要跟踪和提交到 Git 仓库，如何让 Git 忽略这个文件呢？</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/229af32f7bdd45e58cd1983d4735371d.png" alt="在这里插入图片描述"></li>
+</ul>
+<p><strong>需要用到的命令</strong></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">用途</th>
+<th align="left">命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">如果当前根目录下没有<code>.gitignore</code> 文件，<br>则在当前目录下 创建一个名为 <code>.gitignore</code> 的空文件。<br>创建后，手动修改文件内容，添加需要被忽略的文件。</td>
+<td align="left"><code>touch</code>：<code>touch .ignore</code></td>
+</tr>
+<tr>
+<td align="left">查看仓库当前状态</td>
+<td align="left"><code>git status</code></td>
+</tr>
+</tbody>
+</table><hr>
+<p><strong>第一步</strong>：查看当前根目录下，有没有 <code>.gitignore</code> 文件，如果有，直接用编辑器在该文件中 添加该文件。</p>
+<ul>
+<li>如果是初始化的仓库，当前根目录下没有<code>.gitignore</code> 文件，则在<strong>当前目录下</strong> 创建一个名为 <code>.gitignore</code> 的空文件，输入：<code>touch .gitignore</code>。
+<ul>
+<li>如果 <code>touch</code> 后面跟的<strong>文件不存在</strong>，它会自动创建一个新的空文件。</li>
+<li><strong>注</strong>：在当前根目录，右击选择打开 Git Bash。文件才会在当前根目录下创建。</li>
+<li>✔️  <code>.gitignore</code>：纯文本文件，Git 版本控制系统的配置文件，告诉 Git 哪些文件或目录 <strong>不应该被追踪和提交</strong>。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/2b114d0664eb47dfa5e99cc7fdcd0d2b.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>第二步：</strong> 打开代码编辑器，添加要被忽略的文件（相对于<code>.gitignore</code>文件的路径）。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/ea743539bff043459afbbedf9963a089.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>第三步：</strong> 查看仓库状态，看下未被跟踪文件的列表。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/ea442559e17949c3acc9c40b0213fe29.png" alt="在这里插入图片描述"></li>
+</ul>
+<p><strong>注意事项</strong></p>
+<ul>
+<li><strong>文件位置</strong>：<code>.gitignore</code> 文件通常放在 Git 仓库的<strong>根目录</strong>。也可以在子目录创建，规则会应用于该子目录及更深层级。</li>
+<li><strong>生效时机</strong>：<code>.gitignore</code> <strong>只对尚未被 Git 追踪的文件生效</strong>。如果一个文件已经被 <code>git add</code> 和 <code>git commit</code> 过了，那么即使后来把它加入 <code>.gitignore</code>，它仍会被追踪。此时需要先用 <code>git rm --cached &lt;文件路径&gt;</code> 命令将它<strong>从 Git 的追踪列表中移除</strong>。</li>
+</ul>
+<hr>
+<hr>
+<h3><a id="_Git__723"></a>解决问题：应该被忽略的文件，却已经被提交和推送，如何在 Git 仓库和远程仓库中删除</h3>
+<br>
+<p><strong>查看仓库状态 和 忽略文件</strong>：<code>git status --ignored</code>。发现比我们设置的忽略文件多一个。查找后，发现编辑器的环境配置文件夹<code>.idea</code>中，默认有一个 忽略文件<code>.gitignore</code> 文件，这两个都起效。</p>
+<ul>
+<li>而整个<code>.idea</code> 文件夹都是<strong>不应该</strong>被追踪、提交、推送的，因为这是个人的代码编辑器的环境配置，每个人的设置都不同，没有必要提交。 而这个应该被忽略的文件夹 ，已经被提交，且推送到了Github上，该如何处理呢？</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/d7cdb0293efb497a9130b3a5f9debbf4.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/2c57125f09d141e2918b8609ba1484a9.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>解决办法</strong>：需要从 Git 的<strong>追踪列表</strong>和<strong>历史记录</strong>中将其完全移除，并确保它不再被提交，这个过程通常分为以下几步：</p>
+<ul>
+<li>处理这个问题的正确流程是：<strong>停止追踪（从 Git 追踪列表删除） -&gt; 提交删除 -&gt; 设置忽略 -&gt; 推送到远端</strong>。</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th align="left">步骤</th>
+<th align="left">核心操作</th>
+<th align="left">作用说明</th>
+<th align="left">风险提示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>1. 从 Git 追踪列表中移除</strong>。<br>⇒  <strong>停止跟踪文件，但保留在本地工作区</strong>。</td>
+<td align="left">执行 <code>git rm -r --cached .idea</code> 命令。</td>
+<td align="left">将<code>.idea</code>从 Git 的<strong>暂存区/索引中</strong>删除，但保留本地工作区文件。</td>
+<td align="left">⚠️ <strong>高危</strong>：命令中缺少<code>--cached</code>参数会导致<strong>本地文件也被删除</strong>，一定要加上。</td>
+</tr>
+<tr>
+<td align="left"><strong>2. 提交更改</strong></td>
+<td align="left">执行 <code>git commit -m "移除.idea目录"</code> 命令。</td>
+<td align="left">生成一个新的提交，记录从仓库中删除<code>.idea</code>的操作。</td>
+<td align="left">无。</td>
+</tr>
+<tr>
+<td align="left"><strong>3. 添加到忽略列表，<br>并提交修改后的文件</strong></td>
+<td align="left">在<code>.gitignore</code>文件中添加<code>.idea/</code>。</td>
+<td align="left">确保后续对<code>.idea</code>的更改<strong>不会被 Git 再次追踪</strong>。</td>
+<td align="left">无。</td>
+</tr>
+<tr>
+<td align="left"><strong>4. 推送到远程</strong></td>
+<td align="left">执行 <code>git push origin &lt;branch_name&gt;</code> 命令。</td>
+<td align="left">将本次删除操作 <strong>同步到远程仓库</strong>（如 GitHub）。</td>
+<td align="left">无。</td>
+</tr>
+</tbody>
+</table><hr>
+<p><strong>第一步</strong>：将 <code>idea</code> 文件夹从 Git 的索引中删除，但保留本地工作区文件。<strong>让 Git 停止追踪文件</strong>，但文件本身会保留在你的电脑上，IDEA可以继续使用它。</p>
+<ul>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/d84141efd6d14a51a72a29260ea506f2.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p>❶  <strong><code>git rm</code></strong> - Git 的删除命令。</p>
+</li>
+<li>
+<p>❷ <strong><code>-r</code></strong> - <strong>递归</strong>标志，表示如果 <code>.idea</code> 是一个目录，会<strong>递归删除“目录下的所有内容”</strong>。</p>
+</li>
+<li>
+<p>❸  <strong><code>--cached</code></strong> - <strong>关键选项</strong>，表示"只从 Git 的追踪列表中移除，但保留在本地硬盘上"。</p>
+<ul>
+<li>⚠️<strong>注</strong>：<strong>请务必检查确认“没有漏掉<code>--cached</code>参数”。</strong></li>
+</ul>
+</li>
+<li>
+<p>❹  <strong><code>.idea</code></strong> - JetBrains IDE（如 IntelliJ IDEA, PyCharm, WebStorm 等）的项目配置文件目录。</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>关于清理历史（可选但推荐）</strong>：以上操作后，<code>.idea</code>虽然从最新代码中消失了，但仍保留在 Git 的<strong>历史提交记录</strong>里，如果不包含隐私信息，可以不清理提交历史。
+<ul>
+<li>如果其中包含<strong>敏感信息</strong>（如 API 密钥），要完全清除历史记录，需要使用 <code>git filter-branch</code> 或 <code>git filter-repo</code>，但这会重写历史。</li>
+<li><strong>注意：重写历史会改变提交哈希，如果仓库是多人协作，必须提前协调好</strong>。</li>
+</ul>
+</li>
+<li><strong>沟通与同步</strong>：操作完成后，<strong>务必通知团队成员</strong>。因为他们可能拉取了之前含<code>.idea</code>的文件夹，需要在拉取（pull）本次的更改后，在本地也执行<code>git rm -r --cached .idea</code>命令，以保持本地仓库状态一致。</li>
+</ul>
+<hr>
+<p><strong>第二步：</strong> 把文件夹从Git 的暂存区/索引移除后，<strong>提交本次移除操作</strong>。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/08b8ee9d0a414016915c3934f33c47f0.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>第三步</strong>：把需要被忽略的文件，如 <code>.idea</code> 文件夹，添加到 忽略文件<code>gitignore</code> 文件中，并提交 <code>.gitignore</code> 文件。</p>
+<p><img src="https://i-blog.csdnimg.cn/direct/c7796dea3e2e420e8b95525e01a1ed07.png" alt="在这里插入图片描述"></p>
+<p><img src="https://i-blog.csdnimg.cn/direct/76798d36a2614f269fad82f94855c197.png" alt="在这里插入图片描述"></p>
+<hr>
+<p><strong>查看 提交的历史记录</strong>：<code>git log</code></p>
+<ul>
+<li><strong>注</strong>： Git Bash 中输入 <code>git log</code> 后出现 <strong>END</strong> 就无法再输入其他命令了。
+<ul>
+<li>是因为 <code>git log</code> 默认使用了<strong>分页器</strong>（pager）来显示内容，通常是 less 或 more。当看到 END 时，说明已经到达日志末尾，需要<strong>退出分页器</strong>才能返回命令行。可以<strong>按 q</strong>（英文输入状态下）退出分页器，就会重新出现命令行。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/90a4cd3e75504dbb8d70bd427161d766.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>第四步</strong>：把 Git 仓库，推送到 Github。查看远程仓库的 <code>.idea</code> 文件夹是否删除，是否添加了 <code>.gitignore</code> 文件。</p>
+<ul>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/eaa6629c8fb54af5bce45ee05b80fa70.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/7be193b0f3824b22bfb069b46e883892.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<p><img src="https://i-blog.csdnimg.cn/direct/a0ffa2b761bc4149b79849d4bda5aaf5.png" alt="在这里插入图片描述"></p>
+<hr>
+<hr>
+<h2><a id="____799"></a>撤销提交/ 回退到“指定提交版本” 、把暂存区文件 回退到工作区</h2>
+<h3><a id="_Git__git_reset_softmixedhard_HEADn_id_800"></a>版本回退：在 Git 仓库里提交了错误的内容、回退到之前的版本 （git reset --soft/mixed/hard HEAD~n/提交 id）</h3>
+<ul>
+<li>
+<p><strong>需要了解的基本命令和几个区域</strong></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/4678aedd3c824f198b98d144e0a9b98d.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p><strong>工作区</strong> (Working Directory)：正在编辑的文件。</p>
+</li>
+<li>
+<p><strong>暂存区</strong> (Staging Area/Index)：准备提交的文件列表。</p>
+<ul>
+<li><strong>staging area</strong>，又叫 <strong>index</strong> ，即 staging area = index ，<strong>暂存区/ 索引区</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>版本库/本地 Git 仓库</strong> (Repository)：已提交的历史记录。</p>
+</li>
+</ul>
+<hr>
+<h4><a id="_814"></a>版本回退的基础命令</h4>
+<br>
+<p><strong>相关命令和用途</strong></p>
+
+<table>
+<thead>
+<tr>
+<th align="left">用途</th>
+<th align="left">命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">查看 <strong>仓库的当前状态</strong></td>
+<td align="left"><code>git status</code></td>
+</tr>
+<tr>
+<td align="left">查看 <strong>提交的历史记录、HEAD 指向</strong></td>
+<td align="left"><code>git log --oneline</code>（简洁版：提交 id 、提交说明）；<br><code>git log</code>（详情版：有提交的id、说明、作者、邮箱、时间）。</td>
+</tr>
+<tr>
+<td align="left"><strong>把文件添加到“暂存区”</strong></td>
+<td align="left">添加指定文件：<code>git add  &lt;文件路径&gt;</code>  ；<br>添加全部文件：<code>git add . </code></td>
+</tr>
+<tr>
+<td align="left"><strong>提交文件</strong></td>
+<td align="left">把暂存区文件全部提交： <code>git commit -m "提交说明"</code>；<br><strong>绕过暂存区，直接 指定提交文件</strong>（不提交暂存区其他文件）：<br><code>git commit  &lt;文件路径&gt; - m "提交说明"</code>。</td>
+</tr>
+<tr>
+<td align="left"><strong>移动 HEAD 指针，保留暂存区、工作区</strong>。<br><strong>最后一次提交内容</strong>： 回到暂存区，待提交状态。<br> 暂存区域保持不动。<br><br> <strong>使用场景</strong>：撤销提交，所有修改放入暂存区，重新提交。</td>
+<td align="left"><code>git reset --soft HEAD^</code><br><br> <strong>提交 id 替代 HEAD，回退到“指定提交”</strong>：<br><code>git reset --soft commit_id</code> 。</td>
+</tr>
+<tr>
+<td align="left"><strong>移动 HEAD 指针，重置暂存区，保留工作区更改</strong>。<br><strong>暂存区所有内容、最后一次提交内容</strong>：全部 回到工作区。<br><br><strong>使用场景</strong>：默认模式，所有修改保留在工作区（含原本暂存区内容）。</td>
+<td align="left"><code>git reset --mixed HEAD^</code>  = <code>git reset HEAD~1</code>  <br> （<code>--mixed</code> 可省略，<code>git reset</code>默认模式）<br><br><strong>取消暂存的特定文件</strong>：<code>git reset HEAD file.txt</code>  = <code>git reset file.txt </code> （默认是 <code>--mixed HEAD</code>）。<br>仅从暂存区移除该文件，不影响工作区的修改。</td>
+</tr>
+<tr>
+<td align="left"><strong>移动 HEAD 指针，重置“暂存区、工作区的修改”</strong>。<br> ⚠️ 已跟踪文件的 暂存区的修改、工作区里的修改 都会被清除。<br><br> <strong>使用场景</strong>：<strong>彻底回退</strong>，直接<strong>从本地删除所有修改</strong>（包括：<strong>未提交的暂存内容</strong>）。<br><br><code>--hard</code> 会<strong>永久删除未提交的更改，无法恢复</strong>（除非有 <code>stash</code>）；<br><br>对已推送到远程仓库的提交 使用 <code>reset</code> 后，<br>需要强制推送 (<code>git push -f</code>)，<br>这可能影响其他协作者。</td>
+<td align="left"><code>git reset --hard HEAD^</code></td>
+</tr>
+<tr>
+<td align="left"><strong>查看 所有操作的历史记录</strong></td>
+<td align="left"><code>git reflog</code></td>
+</tr>
+</tbody>
+</table><hr>
+<ul>
+<li>执行回退操作，要知道 <strong>当前版本是哪个版本</strong>，Git 中， 默认：<strong>HEAD 指针 = 指向当前版本 = 最新的提交</strong>。
+<ul>
+<li><strong>上一个版本 = <code>HEAD^</code> =  <code>HEAD~1</code></strong>；移动 HEAD 指针，让 HEAD 指向上一个版本。</li>
+<li><strong>上上个版本 = <code>HEAD^^</code>=  <code>HEAD~2</code></strong>；移动 HEAD 指针，让 HEAD 指向上上一个版本。</li>
+<li><strong>上 n 个版本 =  <code>HEAD~n</code></strong>；移动 HEAD 指针，让 HEAD 指向上n 个版本。</li>
+<li><strong><code>HEAD</code> 的替代</strong>：也可以用指定的 <strong>提交 id</strong> 替代，HEAD 会指向指定的提交。</li>
+</ul>
+</li>
+<li><strong>回退版本</strong>：<code>git reset</code> 。</li>
+<li><strong>注</strong>：<code>git reset</code> 需要谨慎使用，可以<strong>移动 HEAD 指针</strong>，可选择性 <strong>撤销提交、重置暂存区、工作区</strong>。</li>
+<li><strong>主要作用</strong>
+<ul>
+<li>❶ <strong>移动 HEAD 指针（可选 撤销提交）</strong>：<strong>HEAD</strong> 指针移动到指定的目标提交，如果指向的是别的提交（不是当前的 HEAD），当前的提交就会被撤销，跟目标提交保持一致。如果 <strong>HEAD</strong> 指向的还是当前提交，则跟当前提交一致，也就是不撤销提交。</li>
+<li>选择性重置暂存区、工作区。</li>
+<li>❷  <strong>重置暂存区</strong>：跟目标提交保持一致，把暂存区内容清空，都移出去。</li>
+<li>❸ <strong>重置工作区</strong>：跟目标提交保持一致，只要是被追踪的文件（使用过一次 <code>git add</code>），跟目标提交不一致的修改内容 全部删除，如果这些修改没提交过，将很难找回。</li>
+</ul>
+</li>
+<li><strong><code>git reset</code> 的 3 种模式（3 个选项）</strong>
+<ul>
+<li>❶ 移动 <strong>HEAD</strong> 指针，但<strong>保留暂存区、工作区</strong>的更改：<code>--soft</code>。
+<ul>
+<li>相关操作：</li>
+<li><strong>移动 HEAD</strong> 指向目标提交（如果指定了提交），撤销提交、提交内容回到“暂存区”（最安全）。</li>
+<li><strong>保留暂存区</strong>：不动暂存区的内容。</li>
+<li><strong>保留工作区</strong>：不动工作区的内容。</li>
+</ul>
+</li>
+<li>❷ 移动 HEAD 指针，<strong>重置暂存区、保留工作区</strong>的更改：<code>--mixed</code>。。
+<ul>
+<li>相关操作：</li>
+<li><strong>移动 HEAD</strong> 指向目标提交（如果指定了提交），撤销提交、提交内容回到“工作区”（默认模式）。</li>
+<li><strong>重置暂存区</strong>：使其与目标提交一致。</li>
+<li><code>git reset HEAD^</code> = <code>git reset --mixed HEAD^</code></li>
+</ul>
+</li>
+<li>❸ 移动 HEAD 指针，<strong>重置暂存区、工作区（最不安全）</strong>：<code>--hard</code>。
+<ul>
+<li>三个操作</li>
+<li><strong>移动 HEAD</strong> 指向目标提交（如果指定了提交），撤销提交，新提交内容直接删除。</li>
+<li><strong>重置暂存区</strong>：暂存区内容全部清除，使其与目标提交一致。</li>
+<li><strong>重置工作区</strong>：已跟踪文件在工作区的修改 全部删除，使其与目标提交一致（会导致未暂存的修改被覆盖）。</li>
+</ul>
+</li>
+<li>✔️ <code>--hard</code> 的意思：为了<strong>和“目标提交的内容”保持一致</strong>，<strong>已跟踪文件的 工作区、暂存区、提交的相关内容 都直接清除</strong> ⇒  相当于 <strong>放弃所有本地修改，回到上次提交</strong>。
+<ul>
+<li>⚠️ <strong>风险警告</strong>：针对 <strong>已跟踪的文件</strong>（只要文件使用过一次 <code>git add</code> = 已跟踪），这个命令会<strong>永久删除</strong>：<strong>未暂存的文件更改，暂存的代码修改，最后一次提交的修改。</strong>
+<ul>
+<li><code>git reset --hard</code> 是 Git 中最危险的命令之一，使用前务必三思！</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>注</strong>：在 Git 中任何 已提交 的东西，都会被提交到 本地 Git 仓库，几乎总是可以恢复的，相对安全。
+<ul>
+<li><strong>而已跟踪 却未提交的东西，一旦丢失</strong>，很可能<strong>再也无法找回</strong>。如，在工作区、暂存区的修改内容，一旦被直接删除，就很难再恢复。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>区分“已跟踪文件”、“未跟踪文件”</strong></p>
+<ul>
+<li>🔔 <strong><code>git reset</code> 不会清除的文件</strong>：“<strong>纯未跟踪的文件</strong>（<code>Untracked files</code>）” = 从未被 Git 跟踪过的意思是： <strong>从未使用过 <code>git add</code> 的文件</strong>，该文件一次 <code>git add</code> 都没用过，就不会被<code>git reset</code>清除。
+<ul>
+<li>
+<p><strong>原因</strong>：<code>git reset</code> 只操作<strong>已纳入版本控制的文件</strong>，从未跟踪过的文件 一次<code>git add</code> 都没使用过，不属于版本控制范围，所以 <code>git reset</code> 重置提交时 不会处理它们。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/3e61e494b401453f887c02823cb27ccd.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p>假如一个文件使用过一次<code>git add</code> 添加到暂存区，这个文件就是已跟踪文件了，即使后面对该文件的任何修改 都没有用<code>git add</code>添加到暂存区（此时属于 在已跟踪文件的工作区），它也是一个被跟踪的文件，<code>git reset</code> 重置已跟踪文件的暂存区、工作区的时候，这个文件的新增修改都会被删除。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>
+<p><strong>工作区、已跟踪文件、未跟踪文件</strong></p>
+<ul>
+<li>工作区有两种文件：一种是从未使用过 <code>git add</code> 的<strong>未跟踪文件（untracked file）</strong>，一种是使用过至少一次<code>git add</code> 的<strong>已跟踪文件</strong>。</li>
+<li><strong>容易误解的点</strong>：我们已经使用<code>git add</code> 把文件添加到暂存区了，就是暂存区的文件，怎么还会出现在工作区呢？
+<ul>
+<li><strong>工作区（Working Directory）</strong>，就是我们<strong>编辑文件的本地文件夹</strong>，我们实际看到的文件。</li>
+<li><strong>暂存区（Staging Area/Index）</strong>：<code>git add</code> 添加的地方。</li>
+<li><strong>版本库（Repository）</strong>：<code>git commit</code>提交的地方。</li>
+</ul>
+</li>
+<li><strong>例</strong>： 假如我们创建了一个新文件 <code>file.txt</code>，把它用 <code>git add</code> 放到暂存区等待提交，然后我们继续修改这个文件  <code>file.txt</code>，再次查看仓库状态，会发现 <code>file.txt</code>有两个提示：
+<ul>
+<li>一个<code>file.txt</code>在暂存区，提示我们提交。</li>
+<li>一个<code>file.txt</code>在工作区， 提示我们暂存本次修改。</li>
+<li>而此时 未跟踪文件列表中 不会再出现<code>file.txt</code>，因为它已经使用过<code>git add</code> = 已跟踪文件了。</li>
+</ul>
+</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/1fdac8e3a2b74c72967d759148260425.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/0837e28bbf6d4478a3e4f95817d822d2.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/3e0d5c2bedf445b59215d9edc0ff9b2f.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>🔔 <strong>注</strong>：同一个文件修改多次，<code>git add</code> 多次，然后只提交一次，最后提交的是谁呢？<strong>提交的是 最后一次 <code>git add</code>的内容 = 当前工作区的内容</strong>。
+<ul>
+<li><strong><code>git add</code> 让工作区 覆盖暂存区内容</strong>：每次 <code>git add</code> 都会用 <strong>“当前工作区”的文件内容</strong> 覆盖 <strong>“暂存区”中对应文件的内容</strong>。</li>
+</ul>
+</li>
+<li><strong>使用 <code>git add</code> 的时机</strong>：按逻辑单元 <code>git add</code>，比如完成 一个功能，一次修复，一个新文件，可以<code>git add</code> 后 提交，确保每次提交都能成为一个有效的回退点，在代码出问题时，可以进行版本回退，成为一种补救方式。</li>
+</ul>
+<pre><code class="prism language-bash"><span class="token comment"># 坏例子：一次性 add 所有不相关修改</span>
+	<span class="token function">git</span> <span class="token function">add</span> <span class="token builtin class-name">.</span>
+	<span class="token function">git</span> commit -m <span class="token string">"修复bug和添加新功能"</span>  <span class="token comment"># ❌ 代码功能混杂在一起，功能划分不清晰</span>
+	
+	<span class="token comment"># 好例子：按逻辑分开 add</span>
+	<span class="token comment"># 先处理 bug 修复</span>
+	<span class="token function">git</span> <span class="token function">add</span> src/error_handler.js
+	<span class="token function">git</span> commit -m <span class="token string">"修复用户登录时的空指针异常"</span>
+	
+	<span class="token comment"># 再添加新功能</span>
+	<span class="token function">git</span> <span class="token function">add</span> src/new_feature.js test/new_feature.test.js
+	<span class="token function">git</span> commit -m <span class="token string">"添加用户偏好设置功能"</span>
+</code></pre>
+<hr>
+<ul>
+<li><strong>Git 可以管理、跟踪我们在本地文件夹里的修改</strong>，这种修改是和之前该文件夹的对比，如 新增文件、删除文件、修改某个文件具体内容，有变动都算是修改（注：追踪具体的修改内容时，<strong>只能追踪文本内容</strong>，二进制数据的文件 无法追踪修改的具体内容，如图片里图画怎么修改的 是看不见的）。
+<ul>
+<li>对于<code>git add</code> 过的<strong>已跟踪文件</strong>，修改具体内容，会出现 暂存修改的提示。</li>
+<li>对于从未<code>git add</code> 过的<strong>未跟踪文件</strong>，修改具体的文件内容，不会出现修改的提示，会一直提示<strong>该文件在未跟踪文件列表</strong> （<strong>untracked files</strong>）里。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4><a id="_919"></a>版本回退的具体步骤</h4>
+<br>
+<p><strong>基本流程</strong>：添加一段错误信息 → 提交到 本地 Git 仓库 → 后悔了，想回退到没修改之前的版本。</p>
+<p><strong>第一步：</strong>  在某个文件中添加一段文字：如 在 <strong>README.md</strong>中添加一段话，并提交到 本地 Git 仓库中。同时建 2 个 空的 txt 文件，一个不暂存、不提交，一个只暂存，看一下 <code>reset</code> 命令如何影响 <strong>工作区、暂存区、已提交文件</strong>。</p>
+<ul>
+<li>
+<p>目前三个文件：一个没暂存、没提交，一个只暂存了，一个暂存和提交了。</p>
+</li>
+<li>
+<p><strong>注</strong>：文件名用<strong>英文字母</strong>，不要包含中文字，容易出现乱码问题。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/34e878ff86a24dfc8ca01f0c5e9d9169.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/b46d1f34739a449a8bc18f9b29bbd3eb.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<hr>
+<p><strong>第二步</strong>： 分别对三个文件进行操作。</p>
+<ul>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/3de94f5180c84068b4f617701b9dbf1d.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/13c1a369f7254c43a124066b5ee05b47.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><strong>查看提交历史</strong>：</p>
+<ul>
+<li>
+<p>❶ 命令行：<code>git log</code>（带用户名、时间）、<code>git log --oneline</code> （一行的 <strong>简洁版提交历史</strong>）</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/61b5287293a145a2b9677a8a33408f8a.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>❷ 可视化的提交历史：可以在 代码编辑器，如 webstorm 中查看提交历史，打开项目后，点击左下角 <strong>Git</strong> ，即可查看。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/b611d81ca8b4451dbbdcc0e3d31d7adc.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<hr>
+<p><strong>第三步：</strong> 现在有 7 次提交，假设第 7 次是错误提交，我们想回退到第 6 次提交的版本，也就是上一个提交版本。</p>
+<hr>
+<p>❶ <strong>第一种撤销提交</strong>：<strong>撤销最后一次提交</strong>，移动 HEAD 指针 到上一个提交的版本，但<strong>保留暂存区和工作区</strong>，最后一次的 <strong>提交内容回到暂存区</strong>。</p>
+<ul>
+<li>
+<p><code>git reset --soft HEAD^</code> 或 <code>git reset --soft HEAD~1</code></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/5d4184978a9748eeb913601cdecfa0de.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/cab0f649c76641b28acb48a8238765a0.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/8a2f66b680794bb8a758849a0be909a7.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>第二种撤销提交</strong>：<code>--mixed</code>选项，<strong>可省略</strong>，是<strong>默认模式</strong>。 移动 HEAD 指针，<strong>重置整个暂存区</strong>（不管提交还是没提交的），但保留工作区的更改。</p>
+<ul>
+<li>
+<p>撤销提交，提交内容回到工作区：<code>git reset HEAD~1</code> =   <code>git reset HEAD^</code>     =  <code>git reset --mixed HEAD^</code></p>
+</li>
+<li>
+<p><strong>注</strong>： 默认模式是 <strong>重置整个暂存区</strong>，<strong>重置的提交内容、暂存区所有内容 都回到工作区</strong>。不仅被撤销的提交内容回到工作区，<strong>在暂存区里 没被提交的文件，也要回到工作区</strong>。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/a367afd5ec694e4ba1dd599c9acab8b8.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/1e7c2c22915948fa860209b2103af3e5.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/c6256386453041bda5a7f3764d698d61.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/3c29792f16054942bfbb4acbc70ed237.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/62d43ece9dbf4175848b687110b37f9e.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/7a0f56524f9841c18668d3b882a56c79.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<hr>
+<p><strong>第三种撤销提交方式</strong>：<strong>移动 HEAD 指针，重置暂存区、工作区。</strong></p>
+<ul>
+<li>
+<p>已跟踪文件的 提交内容、暂存区、工作区 <strong>全部和目标提交保持一致</strong>。</p>
+<ul>
+<li>
+<p><strong>移动 HEAD</strong> 指向目标提交（如果指定了提交），撤销提交，新提交内容直接删除。</p>
+</li>
+<li>
+<p><strong>重置暂存区</strong>：暂存区内容全部清除，使其与目标提交一致。</p>
+</li>
+<li>
+<p><strong>重置工作区</strong>：<strong>已跟踪文件在工作区的修改 全部删除</strong>，使其与目标提交一致（会导致未暂存的修改被覆盖）。</p>
+</li>
+<li>
+<p>只有从未被跟踪过的文件（没使用过一次 <code>git add</code>）还存在。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/c5063e858492434b97b027c458d48638.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/52cc99181a314c519e200d30e828720f.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/c6f10545f6ab44f896de5f526af0e1ea.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<hr>
+<hr>
+<h4><a id="_git_reflog__git_fsck_lostfoundgit_show__996"></a>重置提交后的“恢复操作”：从操作记录里的提交恢复 git reflog、从暂存区 恢复 git fsck --lost-found、git show &lt;哈希值&gt;</h4>
+<ul>
+<li><strong>恢复误操作</strong>：如果不小心误用了 <code>git reset</code>。
+<ul>
+<li>比如 我们现在使用了 <code>--hard</code> 重置后，发现暂存区文件被删掉了，文件里的修改也被删掉了，突然后悔了，还想重新恢复被删除的内容。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>第一种方式</strong>：从操作记录的提交中恢复。</li>
+</ul>
+<pre><code class="prism language-bash"><span class="token comment"># 查看所有操作记录</span>
+<span class="token function">git</span> reflog
+
+<span class="token comment"># 恢复到 reset 之前的状态</span>
+<span class="token function">git</span> reset --hard HEAD@<span class="token punctuation">{</span><span class="token number">1</span><span class="token punctuation">}</span>
+</code></pre>
+<p><img src="https://i-blog.csdnimg.cn/direct/c214f5bf572c42cfaf9f4b7fce7c1276.png" alt="在这里插入图片描述"><br>
+<img src="https://i-blog.csdnimg.cn/direct/642d7d3c7cad4415894aa96956233540.png" alt="在这里插入图片描述"></p>
+<hr>
+<p><strong>第二种方式：从暂存区恢复</strong>。如果文件曾被 <code>git add</code>到暂存区，可用 <code>git fsck --lost-found</code> 查找。</p>
+<ul>
+<li><strong>注</strong>：<strong>暂存区的空文件 被硬重置<code>--hard</code>删除后 无法找回</strong>，如 只有名字的 txt 文件。
+<ul>
+<li>如果<strong>不是空文件</strong>，放在暂存区后，被 <code>git reset --hard HEAD^</code> 硬重置后，用 <code>git fsck --lost-found</code>能找回。</li>
+<li>原因：在 Git 中，空文件（0字节） 的 blob 对象哈希值是固定的：<code>e69de29bb2d1d6434b8b29ae775ad8c2e48c5391</code>，Git 可能不会为空的暂存文件创建新的 blob 对象，空文件就可能没有保存为 <strong>blob</strong>。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>Git 的工作机制：</strong></p>
+<ol>
+<li><strong><code>git add</code> 时</strong>：文件内容被保存为 <strong>blob</strong> 对象，存储在 <code>.git/objects/</code>。</li>
+<li><strong><code>git reset --hard</code> 时</strong>：
+<ul>
+<li>清除了<strong>暂存区的引用</strong>。</li>
+<li>但 blob 对象<strong>仍然在数据库</strong>中。</li>
+<li>只是变成了 <strong>"孤立"对象</strong>。</li>
+</ul>
+</li>
+<li><strong><code>git fsck --lost-found</code></strong>：专门查找这些孤立对象并保存。</li>
+</ol>
+<hr>
+<p><strong>注意事项</strong></p>
+<ol>
+<li><strong>及时操作</strong> - 孤立的对象可能会被 Git 的垃圾收集（<code>git gc</code>）清理掉。</li>
+<li><strong>不是所有情况都能恢复</strong> - 只能恢复已经被 Git 跟踪过的内容。</li>
+<li><strong>不会恢复“未跟踪的文件”</strong> - 从未 <code>git add</code> 的文件无法恢复。</li>
+</ol>
+</blockquote>
+<p><code>git fsck --lost-found</code></p>
+<ul>
+<li><strong>fsck</strong> = <strong>F</strong>ile <strong>S</strong>ystem <strong>Che</strong>c<strong>k</strong>，文件系统检查。
+<ul>
+<li>Git 内部命令，用于验证 Git 仓库中对象的完整性和连接性。</li>
+<li>检查数据库中的所有对象是否有效、是否有损坏、是否被孤立。</li>
+</ul>
+</li>
+</ul>
+<p><code>--lost-found</code> 参数</p>
+<ul>
+<li>
+<p>将被孤立（dangling<sub>美/ˈdæŋɡlɪŋ/，悬挂，悬空的</sub>）的对象（提交、blob、tree）保存到 <code>.git/lost-found</code> 目录。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/c0981cfc7a7e4f91ae19ed159f05ce32.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>如果不加此参数，<code>git fsck</code> 只会在控制台显示报告，不会实际保存这些对象。</p>
+</li>
+<li>
+<p>使用场景：<strong>强制重置</strong> ， 使用了 <code>git reset --hard</code>， <strong>误删分支</strong> ， 删除了未合并的分支。</p>
+</li>
+</ul>
+<p><strong>恢复数据的步骤</strong></p>
+<pre><code class="prism language-bash"><span class="token comment"># 1. 运行 fsck 查找并保存孤立对象</span>
+<span class="token function">git</span> <span class="token function">fsck</span> --lost-found
+
+<span class="token comment"># 2. 查看孤立的提交的详细信息</span>
+<span class="token function">git</span> show <span class="token operator">&lt;</span>commit-hash<span class="token operator">&gt;</span>
+<span class="token function">git</span> show 8653a3faf97ef52053a1ffc6cf957ed0911cdb72
+
+<span class="token comment"># 3. 对于孤立的文件（blob对象）</span>
+
+<span class="token comment"># 查看这个blob文件是什么内容</span>
+<span class="token function">git</span> show <span class="token operator">&lt;</span>blob-hash<span class="token operator">&gt;</span>
+<span class="token function">git</span> show 85021d8b12f30f2794f823746e94716347515a56
+
+<span class="token comment">#    使用 git show 查看内容时 手动保存到指定文件中（会新建一个文件 ）</span>
+<span class="token function">git</span> show <span class="token operator">&lt;</span>blob-hash<span class="token operator">&gt;</span> <span class="token operator">&gt;</span> recovered-file.txt
+<span class="token function">git</span> show 85021d8b12f30f2794f823746e94716347515a56 <span class="token operator">&gt;</span> recovered-file.txt
+
+<span class="token comment"># 4. 如果需要恢复某个提交到新分支</span>
+<span class="token function">git</span> checkout -b recovered-branch <span class="token operator">&lt;</span>commit-hash<span class="token operator">&gt;</span>
+
+</code></pre>
+<hr>
+<p><strong>测试“恢复暂存区数据”的具体步骤</strong><br>
+<br><br>
+<strong>第一步</strong>：创建一个新文件，添加一段内容，并把该文件<code>git add</code> 添加到暂存区，这个文件就是测试对象。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/ccf8262b486d4c83a0d79f42df8bb36b.png" alt="在这里插入图片描述"><br>
+<img src="https://i-blog.csdnimg.cn/direct/9fe3cba21f174da383468b396c289d99.png" alt="在这里插入图片描述"><br>
+<img src="https://i-blog.csdnimg.cn/direct/ba51c4489c8d48d19cb14de1945837dd.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>第二步</strong>：HEAD 指针不移动，仍指向当前提交，但重置暂存区、已跟踪文件的工作区。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/a6542b45fe8c47af8e70ac95e542ce1b.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>第三步：</strong> 找回暂存区里 <strong>被删除文件内</strong>容。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/24663f439bd44983aa2b54039d6795fa.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/6175eff03c10432f9d79ce5100762150.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<p><strong>输出解析</strong>：显示 Git 找到了<strong>8个孤立的（dangling）对象</strong>：</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/c3716c156f8f4d7cac5833ef6728bc8a.png" alt="在这里插入图片描述"></li>
+</ul>
+<p><strong>检查结果</strong></p>
+<ul>
+<li><code>Checking ref database: 100%</code> - 已检查完<strong>引用数据库</strong>。</li>
+<li><code>Checking object directories: 100%</code> - 已检查完<strong>所有对象目录</strong>。</li>
+<li>找到了 <strong>3个dangling blob</strong> 和 <strong>5个dangling commits</strong></li>
+</ul>
+<p><strong>“dangling”（孤立）对象</strong>： 这些对象存在于 Git 数据库中，但<strong>没有任何引用指向它们</strong>。</p>
+<ul>
+<li>比如：
+<ul>
+<li>分支被删除后，对应的提交就成了孤立的。</li>
+<li><code>git reset --hard</code> 之后，之前的提交变成孤立。</li>
+<li>暂存后又被修改的文件也会产生孤立的 blob。</li>
+</ul>
+</li>
+</ul>
+<p><strong>dangling blob</strong> - <strong>孤立的“文件内容”</strong>：<code>dangling blob d7355035b0e20097746bb96749d5a0c6735f997a</code></p>
+<ul>
+<li><strong>blob</strong>：表示这是<strong>文件内容</strong>（不是提交或目录树）。</li>
+<li><strong>可能来源</strong>：
+<ul>
+<li>执行了 <code>git add</code> 但后来修改了文件。</li>
+<li>执行了 <code>git reset</code> 或 <code>git checkout</code> 导致暂存区内容丢失。</li>
+<li>提交被删除后留下的文件内容。</li>
+</ul>
+</li>
+</ul>
+<p><strong>dangling commits</strong> - <strong>孤立的提交</strong>：<code>dangling commit 8653a3faf97ef52053a1ffc6cf957ed0911cdb72</code></p>
+<ul>
+<li>这些提交存在，但没有分支、标签或其他提交引用它们。</li>
+<li><strong>常见原因</strong>：
+<ul>
+<li>分支被删除（<code>git branch -D</code>）。</li>
+<li>使用了 <code>git reset --hard</code> 回退。</li>
+<li>变基（rebase）失败后留下的中间提交。</li>
+</ul>
+</li>
+</ul>
+<p><strong>孤立对象被保存到哪里？</strong></p>
+<ul>
+<li>如果使用了 <code>--lost-found</code> 参数，Git 会将这些对象保存到：</li>
+</ul>
+<pre><code>.git/lost-found/
+├── commit/    # 存放5个孤立提交
+└── other/     # 存放1个孤立blob文件
+</code></pre>
+<hr>
+<p><strong>最佳实践</strong></p>
+<ol>
+<li><strong>先备份</strong>：重要更改前先创建分支或 <code>stash</code>。</li>
+<li><strong>慎用 <code>--hard</code></strong>：确认不需要那些更改，且知道<strong>已跟踪文件的暂存区、工作区</strong>都会被<strong>重置</strong>。</li>
+<li><strong>团队协作</strong>：避免对共享分支使用 <code>reset</code>。</li>
+<li><strong>替代方案</strong>：考虑使用更安全的 <code>git revert</code>。</li>
+</ol>
+<p><strong>reset vs revert</strong></p>
+<pre><code class="prism language-bash"><span class="token comment"># reset：修改历史（适合本地、未推送的提交）</span>
+<span class="token function">git</span> reset HEAD~1
+
+<span class="token comment"># revert：创建新提交来撤销更改（适合已推送的提交）</span>
+<span class="token function">git</span> revert HEAD
+
+<span class="token comment"># 只取消部分文件的暂存</span>
+<span class="token function">git</span> reset HEAD -- file1.txt file2.txt
+</code></pre>
+<p>记住：<strong>对公共分支使用 <code>reset</code> 要格外小心</strong>，优先考虑使用 <code>git revert</code> 来安全地撤销更改。</p>
+<hr>
+<hr>
+<h2><a id="___1175"></a>取消暂存（取消暂存区的修改）⇒  重置暂存区、保留工作区修改</h2>
+<br>
+<p><strong>需求</strong>： “取消 <code>git add</code> 操作”，让文件回到<strong>修改 但未暂存</strong>的状态。</p>
+<ul>
+<li>❶ <code>git reset</code> 命令：可以回退版本，也可以把暂存区的内容 回退到工作区，重<strong>置暂存区，保留工作区的内容</strong>。</li>
+<li>❷  <code>git restore --S &lt;文件路径&gt;</code> = <code>git restore --staged &lt;文件路径&gt;</code> ，可以重置暂存区 ，将<strong>文件从暂存区移出，但保留工作区修改</strong>。
+<ul>
+<li><strong>注</strong>：此处的<strong>暂存区简写</strong>必须是 <strong>大写  <code>-S</code></strong>，小写<code>s</code>是另一个指令。</li>
+<li><strong>注</strong>：如果文件被暂存后 又进行了修改，且这次修改没暂存，那么<strong>重置暂存区后，就只有工作区的修改保留</strong>，暂存区的修改被重置了，不保留。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3><a id="__git_reset_HEAD___git_reset___1188"></a>⑴ 第一种方式 取消暂存的文件：git reset HEAD &lt;文件路径&gt; = git reset  &lt;文件路径&gt;</h3>
+<ul>
+<li>
+<p><strong>注 1</strong>：没有撤销提交，取消暂存操作、退回工作： 仅 对<code>git add</code> <strong>放在暂存区的文件有效，对已提交的文件无效</strong>。</p>
+<ul>
+<li><strong>例</strong>： <code>git reset HEAD add-staged-file.txt</code>  = <code>git reset add-staged-file.txt </code> （默认是 <code>--mixed HEAD</code>，可省略）。
+<ul>
+<li>仅从暂存区移除该文件，不影响工作区的修改。</li>
+<li>用于将 <code>add-staged-file.txt</code> 文件从“暂存区”移回“工作区”，即取消对该文件的暂存。</li>
+<li><code>git reset</code>：重置命令，用于移动 HEAD 指针或重置暂存区。</li>
+<li><code>HEAD</code>：代表当前分支的最新提交（当前所在位置）。</li>
+<li><code>add-staged-file.txt</code>：要操作的具体文件。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/bf606c0a42ac434ea682adad0aacebcb.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/b6c6fd00fa5b414e82de0bab5e438bb7.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<hr>
+<ul>
+<li>
+<p><strong>注 2</strong>： 想把<strong>已提交的文件 退回工作区</strong>，保存工作区修改 = <strong>版本回退</strong>，参考上一节。可以撤回提交，把 HEAD 指向上一次提交：<code>git reset HEAD^</code>（省略默认值 <code>--mixed</code>）</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/bea42f8e6058426bbf258bdb22cc5b1f.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3><a id="__git_restore_S___git_restore_staged__1207"></a>⑵ 第二种方式 取消暂存的文件：git restore --S &lt;文件路径&gt; = git restore --staged &lt;文件路径&gt;</h3>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/a8fea40695db433a9e1dd6c76bafbb14.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/fcee85ae2d1b46c7820a9b3b40792ff2.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<hr>
+<div id="huifuwenjian"> </div>
+<h2><a id="_____1224"></a>恢复文件（丢弃工作区修改）：从某个分支/ 提交/ 暂存区 恢复文件 到工作区</h2>
+<br>
+<p><strong>可能用到的基础命令</strong></p>
+<br>
+
+<table>
+<thead>
+<tr>
+<th align="left">用途</th>
+<th align="left">命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>查看文件内容</strong></td>
+<td align="left"><code>cat &lt;文件路径&gt;</code> <br><img src="https://i-blog.csdnimg.cn/direct/924f6f855db845ef9bb162cb63bb6e58.png" alt="在这里插入图片描述"></td>
+</tr>
+<tr>
+<td align="left"><strong>查看 提交历史记录</strong></td>
+<td align="left"><code>git log --oneline</code> （一行版；提交id、提交说明）<br><img src="https://i-blog.csdnimg.cn/direct/b080129d59f14b55b572efa27e45a969.png" alt="在这里插入图片描述"></td>
+</tr>
+<tr>
+<td align="left"><strong>查看 某次提交时的文件的内容</strong></td>
+<td align="left"><code>git show &lt;commit-hash&gt;:&lt;文件路径&gt; </code><br><img src="https://i-blog.csdnimg.cn/direct/27795996306043558556a2f9d672f1f1.png" alt="在这里插入图片描述"></td>
+</tr>
+<tr>
+<td align="left"><strong>查看 某次提交的详细信息（差异）</strong></td>
+<td align="left"><code>git show &lt;commit-hash&gt;  </code><br><img src="https://i-blog.csdnimg.cn/direct/43feaf3d878e4ad084482502308a7e7e.png" alt="在这里插入图片描述"></td>
+</tr>
+<tr>
+<td align="left"><strong>查看 当前的最新提交（差异）</strong></td>
+<td align="left"><code>git show HEAD</code>  <br><img src="https://i-blog.csdnimg.cn/direct/0a632651c1dc4154a40685cb43ae2166.png" alt="在这里插入图片描述"></td>
+</tr>
+<tr>
+<td align="left"><strong>比较任意两个提交的差异</strong></td>
+<td align="left"><code>git diff &lt;旧哈希&gt; &lt;新哈希&gt;</code></td>
+</tr>
+<tr>
+<td align="left"><strong>丢弃工作区的修改⇒  从某个分支 “恢复文件”</strong>；<br>注：这个操作有危险性，未提交的修改 会被永久丢弃且无法恢复。<br> 首先，要确定某个文件的当前修改 全部不要了，其次才能用。</td>
+<td align="left"><code>git checkout 分支名 -- &lt;文件路径&gt;</code></td>
+</tr>
+<tr>
+<td align="left"><strong>丢弃工作区的修改⇒ 从某个提交 “恢复文件”</strong>；<br><strong>作用：</strong> 恢复到“任意历史版本。 <br><strong>注：从提交历史恢复的文件 会被默认添加到“暂存区””</strong>。<br>注：这个操作有危险性，未提交的修改 会被永久丢弃且无法恢复。</td>
+<td align="left"><code>git checkout 提交id -- &lt;文件路径&gt;</code>（优先级：暂存区＞最新提交）</td>
+</tr>
+<tr>
+<td align="left"><strong>丢弃工作区的修改⇒ 从最新提交、暂存 恢复文件内容</strong>：<br>将指定文件 恢复到最近一次 提交（ <code>git commit</code>） 或 暂存 （<code>git add</code>） 时的状态。<br> <strong>作用：丢弃当前工作区的修改（未暂存的修改）</strong>。<br><br>注：这个操作有危险性，未提交的修改 会被永久丢弃且无法恢复。</td>
+<td align="left"><code>git checkout -- &lt;文件路径&gt;</code></td>
+</tr>
+<tr>
+<td align="left"><strong>丢弃工作区的修改⇒ 从“最新暂存/ 提交” 恢复文件内容</strong>。<br>注：这个操作有危险性，未提交的修改 会被永久丢弃且无法恢复。</td>
+<td align="left"><code>git restore &lt;文件路径&gt;</code>（优先级：暂存区＞最新提交）</td>
+</tr>
+<tr>
+<td align="left"><strong>丢弃工作区的修改⇒ 从指定提交 恢复文件内容</strong>。<br>注：这个操作有危险性，未提交的修改 会被永久丢弃且无法恢复。</td>
+<td align="left"><code>git restore -s 提交id &lt;文件路径&gt;</code> = <code>git restore --source=提交ID &lt;文件路径&gt;</code></td>
+</tr>
+</tbody>
+</table><blockquote>
+<p><strong>安全建议：</strong></p>
+<ol>
+<li>使用 <code>git checkout -- &lt;file&gt;</code> 前，可以先 <code>git diff &lt;文件路径&gt;</code> 确认要丢弃的修改。<br>
+<img src="https://i-blog.csdnimg.cn/direct/45d8eb612f4642358b5f090fe06d9680.png" alt="在这里插入图片描述"></li>
+<li>考虑使用 <code>git stash</code> 临时保存修改，而不是直接丢弃。</li>
+<li>在 <strong>Git 2.23+</strong> 版本中，推荐使用<strong>更清晰的命令</strong>：
+<ul>
+<li><code>git restore &lt;file&gt;</code> 替代 <code>git checkout -- &lt;file&gt;</code></li>
+<li><code>git restore --source=提交ID &lt;file&gt;</code> 替代 <code>git checkout 提交ID -- &lt;file&gt;</code></li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<hr>
+<h3><a id="__git_checkout_id____git_checkout_____1257"></a>⑴ 第一种方式 恢复文件：git checkout 提交id/分支名  - - &lt;文件路径&gt;、git checkout - - &lt;文件路径&gt; （优先级：暂存区＞最新提交）</h3>
+<ul>
+<li>
+<p>❶  <strong>从某个提交恢复文件</strong>：<code>git checkout 提交id -- &lt;文件路径&gt;</code>，</p>
+<ul>
+<li><strong>注</strong>：连字符 <code>--</code> 一定不能省略。</li>
+</ul>
+</li>
+<li>
+<p><strong>例</strong>： <code>git checkout 87affb3 -- README.md</code> 从提交 <code>87affb3 </code> 恢复 <code>README.md</code> 文件。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/27cb8b8c5a8c4151ab0734e64a5ed821.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/a59e3819ec764b72a5b2cf554e080cdd.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>❷  <strong>从某个分支恢复文件</strong>：<code>git checkout 分支名 -- &lt;文件路径&gt;</code></li>
+<li><strong>例</strong>： <code>git checkout main -- README.md</code> ：从 <code>main</code> 分支恢复 <code>README.md</code> 文件。
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/9467d990f6d641d49fc92d05aca4bdcf.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/6122494a8c93443e927e98c1b867beb2.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>
+<p>❸ <strong>从最新一次提交、暂存区恢复文件</strong>：<code>git checkout -- &lt;文件路径&gt;</code></p>
+<ul>
+<li><strong>暂存区有内容</strong>：该命令恢复到 <strong>暂存区的内容</strong>。如，提交后修改两次，第一次修改后放到暂存区了，第二次修改不想要了，会恢复到暂存区一样的内容。</li>
+<li><strong>暂存区没内容</strong>：该命令恢复到 <strong>最新提交时的内容</strong>。如，提交后多次修改，但没暂存过，该命令恢复到最新提交的版本。</li>
+</ul>
+</li>
+<li>
+<p>A：<strong>暂存区有内容：从暂存区恢复文件</strong>。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/ff3671db4a764f65b9f09278f68c2494.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/5b00b08f46ef48ef9eb2a2cbc7c7979c.png" alt="在这里插入图片描述"></p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/619d5786dc4e431ea90f63fcb37ada53.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>B：暂存区没内容：从最新一次提交的文件 恢复内容</strong>。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/ae4a3344d81c4a52919604cffe21983f.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/ec1ccbddc96941ceaca0d4add28e8c05.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<h3><a id="__git_restore_s_id___git_restore_sourceID_git_restore___1294"></a>⑵ 第二种方式 恢复文件：git restore -s 提交id &lt;文件路径&gt; = git restore --source=提交ID &lt;文件路径&gt;、git restore &lt;文件路径&gt; （优先级：暂存区＞最新提交）</h3>
+<ul>
+<li>
+<p>①  <strong>丢弃工作区修改，从最新一次提交、暂存区恢复文件</strong>：<code>git restore &lt;文件路径&gt;</code></p>
+<ul>
+<li><strong>注</strong>：<strong>同个意思，三种写法</strong>：
+<ul>
+<li>默认选项 <code>git restore &lt;文件路径&gt;</code></li>
+<li>=  简写的显示指定 <code>git restore -W &lt;文件路径&gt;</code></li>
+<li>=  完整写法：<code>git restore --worktree &lt;文件路径&gt;</code>      。</li>
+</ul>
+</li>
+<li><strong>默认选项</strong> <code>W/--worktree</code> ，恢复工作树。
+<ul>
+<li><strong>默认恢复源</strong>：优先级 暂存区＞最新提交，优先从暂存区恢复文件内容，暂存区没有内容，从最新提交的文件恢复。</li>
+<li><strong>查看命令的帮助文档</strong>：<code>git restore -h</code>。</li>
+</ul>
+</li>
+<li><strong>暂存区有内容</strong>：该命令恢复到 <strong>暂存区的内容</strong>。如，提交后修改两次，第一次修改后放到暂存区了，第二次修改不想要了，工作区会恢复到暂存区一样的内容，文件里看到的是上次 <code>git add</code> 时的内容。</li>
+<li><strong>暂存区没内容</strong>：该命令恢复到 <strong>最新提交时的内容</strong>。如，提交后多次修改，但没暂存过，该命令恢复到最新提交的版本，文件里看到的是上次 <code>git commit</code> 时的内容。</li>
+</ul>
+</li>
+<li>
+<p>❶ <strong>暂存区没内容</strong>：<strong>从最新提交恢复。</strong></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/19f25d27d9d1444fa797e30034686e59.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/705fb03855bf446bbf6aa7d6624c68cb.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/e1cbcb1bd23f467f9dc98830f5b35bed.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>❷ <strong>暂存区有内容：从暂存区恢复文件</strong>。
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/fefa6cf80b1d476c813b3abf17d407f5.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/881230f7b8c44cfd8c3160d7a80a4943.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>②  <strong>从指定提交版本 恢复文件</strong>： 简写版 <code>git restore -s 提交id &lt;文件路径&gt;</code>  = 完整版  <code>git restore --source=提交ID &lt;file&gt;</code>
+<ul>
+<li><strong>注</strong>：<strong>指定提交 id</strong> 的 <code>--source</code>的 简写 <code>-s</code> <strong>必须小写</strong>。
+<ul>
+<li><strong>大写 S</strong> 是 取消暂存<code>--staged</code> 的简写，用于<strong>重置暂存区</strong>。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/30baad6c1dd34c1ab1695c08bc78f508.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<hr>
+<h2><a id="__rm__Git___git_rm_cached__1329"></a>删除文件：手动删除 = rm &lt;文件路径&gt;、从 Git 索引删除  git rm --cached &lt;文件路径&gt;</h2>
+<ul>
+<li>对于 Git 来说，文件有两种：<strong>未跟踪文件</strong>（从未 <code>git add</code> 过的 <strong>untracked files</strong>）、<strong>已跟踪文件</strong>（<code>git add</code> 过、暂存区有过记录且没被清除）。</li>
+<li>这两种文件，都可以在文件夹中直接手动删除，或者使用命令<code>rm</code>、<code>git rm</code> 删除（两个删除命令有区别，后面会详解）。</li>
+<li>区别是：
+<ul>
+<li>
+<p>❶ <strong>未跟踪文件 被删除了</strong>，Git 不会特意提醒有文件被删除，只是未追踪文件列表会少一个文件名。</p>
+<ul>
+<li>新建两个文件，用<code>git status </code> 查看仓库状态，有两个未跟踪文件，手动从文件夹删除其中一个。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/43ca1df0589240c48be453f8dcd5411f.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>❷ <strong>已跟踪文件 被删除了</strong>，Git 会<strong>特意提醒有文件被删除，“删除”也算是对已跟踪文件的一种“修改”</strong>。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/f9d9fa8fe45f4f249df060e4e32a47f1.png" alt="在这里插入图片描述"></p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>注 1：直接从文件夹 删除文件 = 用 <code>rm</code> 删除文件</strong>（注：不是<code>git rm</code>），都是从<strong>本地的文件系统（文件夹）</strong> 中删除文件，而 Git 控制的 暂存区、提交的 Git 仓库里，该文件仍然存在。</li>
+<li><strong>注 2</strong>：如果文件<strong>曾提交过</strong>，此刻就还在Git 仓库里，此时把 Git 仓库 推送到远程仓库，那么推送的文件里仍然有本地被删除的文件，因为我们<strong>推送的都是 Git 仓库的文件</strong>（用 <code>git commit</code> 提交的），而不是本地的文件。
+<ul>
+<li>如果想<strong>把文件从 Git 仓库中删除</strong>，让文件变成<strong>未跟踪文件</strong>，就需要 <code>git rm</code> 命令。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong><code>rm</code> 命令和 <code>git rm</code> 的区别</strong></p>
+<p>①   <strong><code>rm</code></strong>：是 Linux/Unix <strong>系统命令</strong>，用于从<strong>文件系统中</strong>删除文件。</p>
+<ul>
+<li>只从<strong>工作目录</strong>（文件系统）中删除文件，Git 仍然会跟踪这个文件的删除状态（在 <code>git status</code> 中显示为 “<strong><code>deleted</code></strong>”）</li>
+<li>需要额外执行 <code>git add</code> 或 <code>git rm</code> 来更新 Git 索引、Git 仓库。</li>
+</ul>
+<p>②  <strong><code>git rm</code></strong>：是 <strong>Git 命令</strong>，用于从 <strong>Git 仓库和索引</strong>中删除文件，把<strong>已跟踪文件 变成未跟踪文件</strong>，可选择性<strong>保留本地文件</strong>。</p>
+<ul>
+<li>同时做两件事：
+<ul>
+<li>
+<p>❶  不带 <code>--cached</code>选项时，从<strong>工作目录</strong>中删除文件（物理删除），带 <code>--cached</code>选项时，保留本地文件。</p>
+</li>
+<li>
+<p>❷  从<strong>Git 索引（暂存区）</strong> 中删除记录。如果保留了本地文件，本地文件变成<strong>未跟踪状态</strong>。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/e30962305fc44376a01cebbe5edc8772.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>删除操作立即进入暂存区，可以直接提交“删除操作”，提交后 Git 仓库里也会删除，推送到远程仓库时，就不会再有这个文件了。</p>
+</li>
+</ul>
+</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left"><code>rm</code></th>
+<th align="left"><code>git rm</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">类型</td>
+<td align="left">系统命令</td>
+<td align="left">Git 命令</td>
+</tr>
+<tr>
+<td align="left">删除位置</td>
+<td align="left">仅工作目录</td>
+<td align="left">工作目录（可选） + Git 索引</td>
+</tr>
+<tr>
+<td align="left">是否需要 <code>git add</code></td>
+<td align="left">需要</td>
+<td align="left">不需要</td>
+</tr>
+<tr>
+<td align="left">保留本地文件选项</td>
+<td align="left">不适用</td>
+<td align="left"><code>--cached</code> 选项 可保留本地文件。</td>
+</tr>
+<tr>
+<td align="left">递归删除<br>（删除文件夹 以及文件夹下所有文件）</td>
+<td align="left"><code>-r</code> 选项</td>
+<td align="left"><code>-r</code> 选项</td>
+</tr>
+<tr>
+<td align="left">强制删除（文件有修改时）</td>
+<td align="left"><code>-f</code> 选项</td>
+<td align="left"><code>-f</code> 选项</td>
+</tr>
+</tbody>
+</table><ul>
+<li>
+<p><strong>★ 常用情景 1：要从版本库（Git 仓库）中删除该文件、远程仓库里也不要了</strong>，必须执行两个操作：</p>
+</li>
+<li>
+<p><strong>删除 Git 索引、提交删除</strong>：❶ 执行命令 <code>git rm --cached &lt;文件路径&gt;</code> 删掉 该文件的<strong>Git 索引</strong>，并且  ❷ 把删除操作 用 <code>git commit -m "提交说明"</code> 提交到 Git 仓库 ，此时 Git 仓库索引里就没有该文件了，推送到远程仓库也不会有。</p>
+<ul>
+<li><strong>注 1</strong>：对于手动删除的文件，<code>rm</code>删除的文件，只要想<strong>从版本库中删除，都可以执行 上面的两个操作</strong>，不用记忆<code>rm</code>其他的 <code>git add</code> 操作（因为是同样的道理，都是暂存、提交“删除操作”）。</li>
+<li><strong>注 2</strong>：<code>git  rm</code> 是否带 <code>--cached</code>选项，看是否保留本地文件。</li>
+<li>一般<strong>建议选择带上<code>--cached</code></strong>，<strong>保留本地文件</strong>，后面需要删除时，自己手动删除也很简单，但如果被删除了，想手动恢复稍微复杂些。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/47a9c9594bfc4efe9a8162e011be49f9.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p><strong>常用情景 2: 对于未跟踪的不重要文件</strong>：可以直接使用 <code>rm</code>、手动删除。</p>
+<ul>
+<li><strong>注</strong>：这个被删了，一般是无法找回的，因为未被跟踪，Git 仓库里没保存。</li>
+</ul>
+</li>
+<li>
+<p><strong>常用情景 3：如果只是临时删除，还不确定是否要提交</strong> → 用 <code>rm</code> = 手动删除，稍后再决定是否从版本库中删除，使用  <code>git add</code> 或 <code>git rm</code> ，效果是一样的，简单记忆的话，统一记忆 <code>git rm</code>即可。</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>后悔删除文件了，可以恢复文件</strong>，更多恢复方法 参见“<a href="#huifuwenjian">恢复文件</a>”小节。
+<ul>
+<li><strong>注</strong>：没有暂存、提交过的内容，是无法恢复的。未跟踪的文件、已跟踪文件的<strong>未暂存的修改内容</strong>，被删除后 都无法恢复。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/18aefdbfa787479eb3d4f3f073dafd23.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong><code>git rm</code> 其他用法</strong>：</p>
+<pre><code class="prism language-bash"><span class="token comment"># 只从 Git 中删除，但保留本地文件</span>
+<span class="token function">git</span> <span class="token function">rm</span> --cached file.txt
+
+<span class="token comment"># 递归删除：删除目录以及目录下的所有文件</span>
+<span class="token function">git</span> <span class="token function">rm</span> -r directory/
+
+<span class="token comment"># 强制删除（即使文件有修改）</span>
+<span class="token function">git</span> <span class="token function">rm</span> -f file.txt
+</code></pre>
+<hr>
+<p><strong>删除 “暂存、提交后 又修改了的文件”</strong></p>
+<pre><code class="prism language-bash"><span class="token comment"># 如果文件有未提交的修改：</span>
+<span class="token function">rm</span> file.txt        <span class="token comment"># 可以删除，但需要 git add 、git rm &lt;file&gt; </span>
+<span class="token function">git</span> <span class="token function">rm</span> --cached file.txt    <span class="token comment"># 需要加 -f 参数：git rm -f file.txt</span>
+</code></pre>
+<ul>
+<li>❶ <code>git rm</code> ：对于暂存、提交之后又修改的文件，<strong>不能直接删除，只能强制删除，加<code>-f</code></strong>。
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/9781c0f0d3fa400bbdd0cc0cdbff59d9.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/345b89ea94a145d2969addb015442a36.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>❷ <strong>使用 <code>rm</code> 删除</strong>： 可直接删除有修改的内容，相当于直接手动从文件夹中删除了文件。
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/5bce79007ef349799018e88265324597.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<hr>
+<h2><a id="Github__1435"></a>Github 上的操作</h2>
+<h3><a id="_Github__1437"></a>克隆/下载 Github 上“已有的仓库”</h3>
+<br>
+<p><strong>克隆/下载 Github 上“已有的仓库”</strong>：<code>git clone  仓库的 git 地址</code></p>
+<ul>
+<li>❶ <strong>选择 克隆的项目“默认的存放位置”</strong>：在哪里打开 Git Bash，就默认存放在哪里。
+<ul>
+<li>
+<p>比如 打开 <strong>F 盘</strong>后，<strong>右击 选择“Open Git Bash here”</strong> ，然后克隆下来的项目 就会<strong>默认存放在 F 盘</strong>。（<code>pwd</code> 命令，可以查看 Git <strong>当前目录的位置</strong>）。如果是桌面右击打开 Git，就会存在桌面上。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/a2edc25a99434b388e12a02e4c45577b.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>❷ <strong>选择要克隆的仓库、复制 仓库的 Git 地址</strong>：在 Github 中，点击 某个仓库进入，找到 <strong>该仓库的 Git 地址</strong>，并<strong>复制</strong>。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/1156429e9af94bdc8aaf719268461b0c.png" alt="在这里插入图片描述"></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/b6bbb7f465e64aa895d365b27a3512e1.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>❸ 在 Git Bash 中，输入 克隆命令<code>git clone 仓库的 git 地址</code>。</p>
+</li>
+<li>
+<p><img src="https://i-blog.csdnimg.cn/direct/afba78ff0e5946b2b988b06f8727768a.png" alt="在这里插入图片描述"></p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/1486d49d209747e59af7762e7ce1bec8.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/570937602e87403489312f2342ae92d8.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<hr>
+<h3><a id="_Github__1459"></a>删除 Github 上的仓库</h3>
+<br>
+<ul>
+<li><strong>删除 Github 上的仓库</strong>：如果是自己的测试项目，没任何重要信息，不想要了，可以点击项目（仓库名），进入后 选择仓库的设置 <strong>“Settings” →  General</strong>，滑动到最下方，有删除选项，可以删除仓库。
+<ul>
+<li>⚠️<strong>注</strong>：删除仓库，相当于跟这个仓库相关的一切数据都没有了，谨慎操作。</li>
+</ul>
+</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/9073d50fc9e2432fa383c78880b9cd1f.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/095b1df0fe1f46938566348e5696209d.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/dd7d39a8daf6487aa5bacb6307f12260.png" alt="在这里插入图片描述"></li>
+</ul>
+<hr>
+<hr>
+<h3><a id="_Github__html__1474"></a>在 Github 上预览 html 文件</h3>
+<br>
+<p><strong>直接在 Github 上 预览 html 文件（看显示效果、非源代码）</strong></p>
+<ul>
+<li><strong>GitHub 官方的解决方案</strong>：为仓库生成一个专属网址（如 <code>https://[我们的用户名].github.io/[仓库名]/文件名.html</code>）来访问项目页面，效果最好。</li>
+</ul>
+<p><strong>设置步骤：</strong></p>
+<ul>
+<li>
+<p>❶ <strong>进入该仓库的“设置”</strong>：选择具体的某个仓库（在 <strong>“Repositories”</strong> 里面）， 进入后，点击该仓库上方的设置 <strong>“Settings”</strong>。</p>
+<ul>
+<li><img src="https://i-blog.csdnimg.cn/direct/832bf8e3f3d641319ffd6b0c196b8ece.png" alt="在这里插入图片描述">3.</li>
+</ul>
+</li>
+<li>
+<p>❷ <strong>找到 Pages 选项</strong>：在左侧菜单中找到 <strong>“Pages”</strong>（页面）选项并点击。</p>
+</li>
+<li>
+<p>❸  <strong>选择源分支</strong>：在 <strong>“Source”</strong>（源）下拉菜单中，选择从 HTML 文件的分支部署，选择分支 <strong>Branch</strong>（通常选主分支 <code>main</code> 或 <code>master</code>），然后点击 <strong>“Save”</strong>（保存）。</p>
+<ul>
+<li><strong>等待部署</strong>：自动的过程，很快，通常不到一分钟，页面会刷新并显示一个绿色的成功提示框，其中就包含网站网址（格式为 <code>https://[用户名].github.io/[仓库名]</code>）。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/e93c2503f32149a3bcd6021282881060.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+<li>
+<p>❹ 设置完成后，访问 <code>我们的网站网址/文件路径</code>（如：<code>https://我们的用户名.github.io/仓库名/文件名.html</code>）即可看到<strong>完美渲染的页面</strong>。</p>
+<ul>
+<li>可以把这个网址加入 README.md 中，会直接显示在仓库的首页，就能直接点击链接，查看 html 渲染效果了。</li>
+<li><img src="https://i-blog.csdnimg.cn/direct/16be6757c04143c488e5a612848c7692.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/d9c52eec40b44a3a8d174844bc52e2ba.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/408f931abdc4483e89777420aa53e9e1.png" alt="在这里插入图片描述"></li>
+<li><img src="https://i-blog.csdnimg.cn/direct/3d681e3712304fd79b4c1c0bdb07e033.png" alt="在这里插入图片描述"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<hr>
+<ul>
+<li><strong>如何参与一个开源项目</strong>：
+<ul>
+<li>❶ 选择想参与的项目 →  ❷ 点击 <strong>Fork 按钮</strong>，把项目复制到自己的 Github 账号里→ ❸  <strong>克隆 Clone</strong> 自己账号里 Fork 的项目，即下载到本地→  ❹ <strong>修改</strong>：按照项目 <strong>README.md</strong> 的说明 运行项目、修改项目、测试项目 → ❺  <strong>推送</strong>到自己 Fork 的项目里 → ❻ 发起 <strong>Pull Request</strong> → 原项目作者会审查我们的提交，提出意见（需要修改后 再次推送）、认为合适直接同意，会把 PR 合并到原项目中，或者拒绝（就是不同意我们的修改）。</li>
+</ul>
+</li>
+<li><strong>注</strong>：必须克隆<strong>自己账号里 Fork 的项目</strong>，才能推送修改，因为，我们<strong>没有权限 把修改的内容 直接推送到“别人的账号”里</strong>。</li>
+</ul>
+<hr>
+<hr>
+<h2><a id="Git__1509"></a>Git 命令</h2>
+<h3><a id="Git__1511"></a>Git 帮助信息</h3>
+<ul>
+<li>使用 Git 时需要帮助，可以找到 Git 的帮助手册，进行提示。</li>
+</ul>
+
+<table>
+<thead>
+<tr>
+<th align="left">用途命令</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>需要 某个命令的一个快速参考表（常用）</strong>：<code>git 命令 -h</code> ，如 <code>git add -h</code>，<br> <code>-h</code> ：就是 <code>help</code>的缩写。</td>
+<td align="left"><img src="https://i-blog.csdnimg.cn/direct/54d31f2ab3e54f08ae6734fbecdea455.png" alt="在这里插入图片描述"></td>
+</tr>
+<tr>
+<td align="left"><strong>获取某个命令的“帮助页信息”</strong>：<code>git help 命令</code> = <code>git 命令 --help</code>，<br>如 <code>git help add</code></td>
+<td align="left"><strong>会打开浏览器，跳转到一个帮助页面。</strong><br>注：安装时就存在的<strong>离线文档</strong>，只是用浏览器打开这个页面，纯英文的，看不懂还想看的话，可以搭配翻译软件使用。<br><img src="https://i-blog.csdnimg.cn/direct/6dee9c3ec53d4d26b7d9caa4a4ba4d90.png" alt="在这里插入图片描述"></td>
+</tr>
+<tr>
+<td align="left"><strong>“帮助命令的简介”</strong>：<code>git help</code></td>
+<td align="left"><img src="https://i-blog.csdnimg.cn/direct/38258377725a4bb79048a219a4f2b744.png" alt="在这里插入图片描述"></td>
+</tr>
+<tr>
+<td align="left"><strong>展示了 Git 所有可用的子命令和功能分类</strong>：<code>git help -a</code> <br> 多次连续 按 Enter 才能显示完全。<br>但一般不需要完全掌握，<br>只需要知道这个帮助用法即可。</td>
+<td align="left">如果按到底，出现 END，再按没反应，可以直接关闭窗口，重新打开。</td>
+</tr>
+</tbody>
+</table></div>
+</body>
+
+</html>
